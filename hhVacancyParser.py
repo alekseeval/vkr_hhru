@@ -16,13 +16,13 @@ class HhVacancyParser:
     # page              -- номер страницы запроса к API
     # @return           -- возвращает данные о вакансиях как массив словарей
     # --------------------------------------------------------------------------------------
-    def __get_vacancies(self, page=0, extra_req_params=dict()):
+    def __get_vacancies(self, page=0, extra_req_params=None):
         vacancies_url = self.api_url + '/vacancies'
         req_params = {
             'page': page,
             'per_page': 100
         }
-        if extra_req_params:
+        if extra_req_params is not None:
             req_params.update(extra_req_params)
         request = requests.get(vacancies_url, req_params)
         data = json.loads(request.content.decode())
