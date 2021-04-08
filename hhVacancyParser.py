@@ -5,7 +5,7 @@ import time
 from pprint import pprint
 
 
-class HhParser:
+class HhVacancyParser:
     api_url = 'https://api.hh.ru'
 
     # --------------------------------------------------------------------------------------

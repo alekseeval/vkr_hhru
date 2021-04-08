@@ -1,13 +1,13 @@
 import json
 
 from pprint import pprint
-from hhParser import HhParser
+from hhVacancyParser import HhVacancyParser
 from resumeParser import HhResumesParser
 
 
 def main():
     # Получение данных по всем вакансиям
-    parser = HhParser()
+    parser = HhVacancyParser()
     vacancies_data = parser.get_all_vacancies()
 
     # Выведение кол-ва полученных данных в логи и запись их в файл
