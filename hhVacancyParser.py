@@ -2,11 +2,12 @@ import requests
 import json
 import time
 
+from typing import Final
 from pprint import pprint
 
 
 class HhVacancyParser:
-    api_url = 'https://api.hh.ru'
+    API_URL: Final = 'https://api.hh.ru'
 
     # --------------------------------------------------------------------------------------
     # Получение данных о всех вакансиях на одной странице запроса
@@ -17,7 +18,7 @@ class HhVacancyParser:
     # @return           -- возвращает данные о вакансиях как массив словарей
     # --------------------------------------------------------------------------------------
     def __get_vacancies(self, page=0, extra_req_params=None):
-        vacancies_url = self.api_url + '/vacancies'
+        vacancies_url = self.API_URL + '/vacancies'
         req_params = {
             'page': page,
             'per_page': 100
@@ -50,7 +51,7 @@ class HhVacancyParser:
     # @return       -- возвращает данные о вакансии как dict
     # --------------------------------------------------------------------------------------
     def get_vacancy_info_by_id(self, vacancy_id):
-        vacancy_url = self.api_url + f'/vacancies/{vacancy_id}'
+        vacancy_url = self.API_URL + f'/vacancies/{vacancy_id}'
         request = requests.get(vacancy_url)
         data = json.loads(request.content.decode())
         request.close()
