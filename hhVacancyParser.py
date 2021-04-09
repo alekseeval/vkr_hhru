@@ -1,31 +1,29 @@
+# TODO: Изменить работу метода __get_vacancies так, чтобы он получал только id вакансий
+#       и минимум сопутствующей информации
+# TODO: Написать метод, позволяющий получать все доступные вакансии рынка
+# TODO: Додумать работу с req_param в методе get_all_vacancies (какие параметры стоит добавлять в словарь и стоит ли)
+#       Может не стоит вообще задавать дефолтное значение
+
 import requests
 import json
-import time
 
 from typing import Final
-from pprint import pprint
 
 
 class HhVacancyParser:
+
     API_URL: Final = 'https://api.hh.ru'
+    API_VACANCIES_URL: Final = API_URL + '/vacancies'
 
     # --------------------------------------------------------------------------------------
-    # Получение данных о всех вакансиях на одной странице запроса
+    # Метод private, так как используется только для выполнения запроса без учета пагинации
     #
-    # extra_req_params  -- dict, который должен содержать параметры запроса к API
-    #                      дефолтное значение {'page': 0, 'per_page': 100}
-    # page              -- номер страницы запроса к API
-    # @return           -- возвращает данные о вакансиях как массив словарей
+    # req_params        --  dict, который должен содержать параметры запроса к API
+    # @return           --  возвращает данные о вакансиях по указанной странице запроса
+    #                       как массив словарей
     # --------------------------------------------------------------------------------------
-    def __get_vacancies(self, page=0, extra_req_params=None):
-        vacancies_url = self.API_URL + '/vacancies'
-        req_params = {
-            'page': page,
-            'per_page': 100
-        }
-        if extra_req_params is not None:
-            req_params.update(extra_req_params)
-        request = requests.get(vacancies_url, req_params)
+    def __get_vacancies_by_request(self, req_params):
+        request = requests.get(self.API_VACANCIES_URL, req_params)
         data = json.loads(request.content.decode())
         request.close()
         assert 'errors' not in data
@@ -34,25 +32,36 @@ class HhVacancyParser:
     # --------------------------------------------------------------------------------------
     # Возвращает данные о всех вакансиях по запросу, с учетом пагинации
     #
-    # @return   -- инофрмация о всех вакансиях по запросу в формате массива словарей
+    # req_params    --  dict, который должен содержать параметры запроса к API,
+    #                   дефолтное значение - req_params = {'page': 0, 'perPage': 100}
+    # @return       --  инофрмация о вакансиях в виде массива словарей, где каждый словарь
+    #                   отвечает за отдельную вакансию
     # --------------------------------------------------------------------------------------
-    def get_all_vacancies(self):
-        data = self.__get_vacancies()
+    def get_all_vacancies_by_request(self, req_params=None):
+        # Проверка наличая параметров запроса
+        if req_params is None:
+            req_params = {
+                'page': 0,
+                'per_page': 100
+            }
+
+        # Заполнение данными о вакансиях с первой страницы запроса
+        data = self.__get_vacancies_by_request(req_params)
         data_book = data.get('items')
+
+        # Получние данных с оставшихся страниц
         while data.get('page') < data.get('pages')-1:
-            data = self.__get_vacancies(data.get('page') + 1)
+            req_params['page'] += 1
+            data = self.__get_vacancies_by_request(req_params)
             data_book += data.get('items')
         return data_book
 
     # --------------------------------------------------------------------------------------
-    # Получние полной информации о вакансии посредством запроса к hh.ru API
-    #
-    # vacancy_id    -- id вакансии на сайте
-    # @return       -- возвращает данные о вакансии как dict
+    # vacancy_id    --  id вакансии на сайте
+    # @return       --  возвращает полные данные о вакансии как dict
     # --------------------------------------------------------------------------------------
     def get_vacancy_info_by_id(self, vacancy_id):
-        vacancy_url = self.API_URL + f'/vacancies/{vacancy_id}'
-        request = requests.get(vacancy_url)
+        request = requests.get(self.API_VACANCIES_URL + f'/{vacancy_id}')
         data = json.loads(request.content.decode())
         request.close()
         assert 'errors' not in data
