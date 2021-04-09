@@ -27,6 +27,7 @@ class HhVacancyParser:
         request = requests.get(vacancies_url, req_params)
         data = json.loads(request.content.decode())
         request.close()
+        assert 'errors' not in data
         return data
 
     # --------------------------------------------------------------------------------------
@@ -53,4 +54,5 @@ class HhVacancyParser:
         request = requests.get(vacancy_url)
         data = json.loads(request.content.decode())
         request.close()
+        assert 'errors' not in data
         return data
