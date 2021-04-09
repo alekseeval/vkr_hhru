@@ -52,4 +52,5 @@ class HhVacancyParser:
         vacancy_url = self.api_url + f'/vacancies/{vacancy_id}'
         request = requests.get(vacancy_url)
         data = json.loads(request.content.decode())
+        request.close()
         return data
