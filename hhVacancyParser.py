@@ -40,10 +40,11 @@ class HhVacancyParser:
     def get_all_vacancies_by_request(self, req_params=None):
         # Проверка наличая параметров запроса
         if req_params is None:
-            req_params = {
-                'page': 0,
-                'per_page': 100
-            }
+            req_params = {}
+        if 'page' not in req_params:
+            req_params['page'] = 0
+        if 'per_page' not in req_params:
+            req_params['per_page'] = 100
 
         # Заполнение данными о вакансиях с первой страницы запроса
         data = self.__get_vacancies_by_request(req_params)
