@@ -1,8 +1,4 @@
-import json
-
-from pprint import pprint
-from hhVacancyParser import HhVacancyParser
-from resumeParser import HhResumesParser
+from data_parsers.hhVacancyParser import HhVacancyParser
 
 
 def main():
