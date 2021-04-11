@@ -4,6 +4,7 @@
 import requests
 import json
 
+from db_service import DbService
 from typing import Final
 
 
@@ -11,6 +12,14 @@ class HhVacancyParser:
 
     API_URL: Final = 'https://api.hh.ru'
     API_VACANCIES_URL: Final = API_URL + '/vacancies'
+
+    # --------------------------------------------------------------------------------------
+    # db_service    --  сервис для свизи с БД, необязательный параметр, если не указывать,
+    #                   то запись идет в базу данных с именем 'hh_ru' под пользовалетем
+    #                   'admin' c паролем 'admin'
+    # --------------------------------------------------------------------------------------
+    def __init__(self, db_service=DbService('hh_ru', 'admin', 'admin')):
+        self.db_service = db_service
 
     # --------------------------------------------------------------------------------------
     # Метод private, так как используется только для выполнения запроса без учета пагинации
@@ -42,6 +51,9 @@ class HhVacancyParser:
             req_params['page'] = 0
         if 'per_page' not in req_params:
             req_params['per_page'] = 100
+
+        # Подключение к базе данных
+        self.db_service.connect()
 
         # Заполнение данными о вакансиях с первой страницы запроса
         data = self.__get_vacancies_by_request(req_params)
