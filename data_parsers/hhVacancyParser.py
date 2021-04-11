@@ -43,7 +43,7 @@ class HhVacancyParser:
     # @return       --  инофрмация о вакансиях в виде массива словарей, где каждый словарь
     #                   отвечает за отдельную вакансию
     # --------------------------------------------------------------------------------------
-    def get_all_vacancies_by_request(self, req_params=None):
+    def get_all_vacancies_id_by_request(self, req_params=None):
         # Проверка наличая параметров запроса
         if req_params is None:
             req_params = {}
@@ -64,6 +64,13 @@ class HhVacancyParser:
             req_params['page'] += 1
             data = self.__get_vacancies_by_request(req_params)
             data_book += data.get('items')
+
+        # Запись полученных данных в бд для дальнейшей работы
+        self.db_service.save_vacancies_id(data_book)
+
+        # Разрыв соединения с базой данных
+        self.db_service.close_connection()
+
         return data_book
 
     # --------------------------------------------------------------------------------------
