@@ -1,5 +1,4 @@
 # TODO: Изменить формат вывода логов при открытии соединения и закрытии
-# TODO: Изменить название метода открытия соединения (или закрытия)
 import psycopg2
 
 
@@ -17,7 +16,7 @@ class DbService:
     # --------------------------------------------------------------------------------------
     # Создает соединение с базой данных
     # --------------------------------------------------------------------------------------
-    def connect(self):
+    def open_connection(self):
         self.connection = psycopg2.connect(
             dbname=self.db_name,
             user=self.user,
@@ -26,12 +25,12 @@ class DbService:
             port=self.port
         )
         assert self.connection.closed == 0
-        print(f'----> Connection to {self.db_name} database was opened')
+        print(f'--> Connection to {self.db_name} database was opened')
 
     def close_connection(self):
         self.connection.close()
         self.connection = None
-        print(f'----> Connection to {self.db_name} database was closed')
+        print(f'--> Connection to {self.db_name} database was closed')
 
     # --------------------------------------------------------------------------------------
     # Сохраняет данные в таблицу schedule
@@ -103,7 +102,7 @@ class DbService:
 
     # TODO: Удалить переменную для бедага debug_number_of_rows (в будущем)
     # --------------------------------------------------------------------------------------
-    # Сохраняет данные в таблицу employment
+    # Сохраняет данные в таблицу specialization
     #
     # specializations       --  список словарей с данными в формате который предоставляет API
     # --------------------------------------------------------------------------------------
@@ -127,7 +126,7 @@ class DbService:
 
         cursor.close()
         self.connection.commit()
-        print(f'----> Into table employment was inserted {debug_number_of_rows} values')
+        print(f'----> Into table specialization was inserted {debug_number_of_rows} values')
 
     # TODO: Переделать метод для записи полных данных о вакансиях
     # --------------------------------------------------------------------------------------

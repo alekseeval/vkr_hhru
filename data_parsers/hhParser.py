@@ -55,7 +55,7 @@ class HhParser:
             req_params['per_page'] = 100
 
         # Подключение к базе данных
-        self.db_service.connect()
+        self.db_service.open_connection()
 
         # Заполнение данными о вакансиях с первой страницы запроса
         data = self.get_vacancies_by_request(req_params)
@@ -91,7 +91,7 @@ class HhParser:
     # --------------------------------------------------------------------------------------
     def load_to_db_dictionaries(self):
         # Открытие соединения с БД
-        self.db_service.connect()
+        self.db_service.open_connection()
 
         # Получение данных справочника dictionaries и занесение их в БД
         request = requests.get(f'{self.API_URL}/dictionaries')
