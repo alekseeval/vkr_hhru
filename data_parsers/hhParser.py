@@ -55,7 +55,7 @@ class HhParser:
             req_params['per_page'] = 100
 
         # Подключение к базе данных
-        self.db_service.connect()
+        self.db_service.open_connection()
 
         # Заполнение данными о вакансиях с первой страницы запроса
         data = self.get_vacancies_by_request(req_params)
@@ -85,3 +85,28 @@ class HhParser:
         request.close()
         assert 'errors' not in data
         return data
+
+    # --------------------------------------------------------------------------------------
+    # Метод выгружает в базу данных словари предоставляемые API
+    # --------------------------------------------------------------------------------------
+    def load_to_db_dictionaries(self):
+        # Открытие соединения с БД
+        self.db_service.open_connection()
+
+        # Получение данных справочника dictionaries и занесение их в БД
+        request = requests.get(f'{self.API_URL}/dictionaries')
+        data = json.loads(request.content.decode())
+        request.close()
+        self.db_service.add_to_schedule_table(data.get('schedule'))
+        self.db_service.add_to_experience_table(data.get('experience'))
+        self.db_service.add_to_currency_table(data.get('currency'))
+        self.db_service.add_to_employment_table(data.get('employment'))
+
+        # Получние данных из справочника specializations и занесение их в БД
+        request = requests.get(f'{self.API_URL}/specializations')
+        data = json.loads(request.content.decode())
+        request.close()
+        self.db_service.add_to_specialization_table(data)
+
+        # Закрытие соединения с БД
+        self.db_service.close_connection()
