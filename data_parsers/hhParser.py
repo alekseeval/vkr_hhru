@@ -8,7 +8,7 @@ from db_service import DbService
 from typing import Final
 
 
-class HhVacancyParser:
+class HhParser:
 
     API_URL: Final = 'https://api.hh.ru'
     API_VACANCIES_URL: Final = API_URL + '/vacancies'
@@ -28,7 +28,7 @@ class HhVacancyParser:
     # @return           --  возвращает данные о вакансиях по указанной странице запроса
     #                       как массив словарей
     # --------------------------------------------------------------------------------------
-    def __get_vacancies_by_request(self, req_params):
+    def get_vacancies_by_request(self, req_params):
         request = requests.get(self.API_VACANCIES_URL, req_params)
         data = json.loads(request.content.decode())
         request.close()
@@ -36,14 +36,16 @@ class HhVacancyParser:
         return data
 
     # --------------------------------------------------------------------------------------
-    # Возвращает данные о всех вакансиях по запросу, с учетом пагинации
+    # Возвращает данные о всех вакансиях по запросу, с учетом пагинации, начиная со страницы
+    # page, указанной в req_params, заканчивая последней доступной страницей по запросу
+    # (с учетом стандартного ограничения API на глубину запроса не более чем в 2000 записей)
     #
     # req_params    --  dict, который должен содержать параметры запроса к API,
     #                   дефолтное значение - req_params = {'page': 0, 'perPage': 100}
     # @return       --  инофрмация о вакансиях в виде массива словарей, где каждый словарь
     #                   отвечает за отдельную вакансию
     # --------------------------------------------------------------------------------------
-    def get_all_vacancies_id_by_request(self, req_params=None):
+    def __get_vacancies_from_request_pages(self, req_params=None):
         # Проверка наличая параметров запроса
         if req_params is None:
             req_params = {}
@@ -56,13 +58,13 @@ class HhVacancyParser:
         self.db_service.connect()
 
         # Заполнение данными о вакансиях с первой страницы запроса
-        data = self.__get_vacancies_by_request(req_params)
+        data = self.get_vacancies_by_request(req_params)
         data_book = data.get('items')
 
         # Получние данных с оставшихся страниц
         while data.get('page') < data.get('pages')-1:
             req_params['page'] += 1
-            data = self.__get_vacancies_by_request(req_params)
+            data = self.get_vacancies_by_request(req_params)
             data_book += data.get('items')
 
         # Запись полученных данных в бд для дальнейшей работы

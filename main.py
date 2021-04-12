@@ -1,10 +1,10 @@
-from data_parsers.hhVacancyParser import HhVacancyParser
+from data_parsers.hhParser import HhParser
 
 
 def main():
     # Получение данных по всем вакансиям
-    parser = HhVacancyParser()
-    parser.get_all_vacancies_id_by_request()
+    parser = HhParser()
+    parser.__get_vacancies_from_request_pages()
 
     # Выведение кол-ва полученных данных в логи и запись их в файл
     # print('---> ' + str(len(vacancies_data)))
