@@ -140,3 +140,13 @@ class DbService:
                 cursor.execute('INSERT INTO vacancies_id (id) VALUES (%s) ON CONFLICT DO NOTHING;', (vac.get('id'), ))
         self.connection.commit()
         print(f'----> Into table vacancies_id was inserted {len(vacancies_list)} values')
+
+    # --------------------------------------------------------------------------------------
+    # Инициализирует все необходимые для работы таблицы в базе данных
+    # из скрипта data/hh_ru_backup
+    # --------------------------------------------------------------------------------------
+    def init_db(self):
+        with self.connection.cursor() as cursor:
+            cursor.execute(open('data/hh_ru_backup', 'r').read())
+        self.connection.commit()
+        print(f'----> 10 tables was recently created')
