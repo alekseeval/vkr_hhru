@@ -142,13 +142,12 @@ class DbService:
         print(f'----> Into table vacancies_id was inserted {len(vacancies_list)} values')
 
     # --------------------------------------------------------------------------------------
-    # Инициализирует все необходимые для работы таблицы в базе данных
-    # из скрипта data/hh_ru_backup
+    # Выполняет скрипт из файла
     #
-    # backup_file   --  файл бэкапа, открытый для чтения
+    # file      --  файл в котором записан скрипт
     # --------------------------------------------------------------------------------------
-    def init_db(self, backup_file):
+    def execute_script(self, file):
         with self.connection.cursor() as cursor:
-            cursor.execute(backup_file.read())
+            cursor.execute(file.read())
         self.connection.commit()
-        print(f'----> 10 tables was recently created')
+        print(f'----> Script was successfully executed')

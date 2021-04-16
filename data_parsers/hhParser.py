@@ -45,7 +45,7 @@ class HhParser:
     # @return       --  инофрмация о вакансиях в виде массива словарей, где каждый словарь
     #                   отвечает за отдельную вакансию
     # --------------------------------------------------------------------------------------
-    def __get_vacancies_from_request_pages(self, req_params=None):
+    def __get_vacancies_from_all_pages(self, req_params=None):
         # Проверка наличая параметров запроса
         if req_params is None:
             req_params = {}
