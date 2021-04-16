@@ -144,9 +144,11 @@ class DbService:
     # --------------------------------------------------------------------------------------
     # Инициализирует все необходимые для работы таблицы в базе данных
     # из скрипта data/hh_ru_backup
+    #
+    # backup_file   --  файл бэкапа, открытый для чтения
     # --------------------------------------------------------------------------------------
-    def init_db(self):
+    def init_db(self, backup_file):
         with self.connection.cursor() as cursor:
-            cursor.execute(open('data/hh_ru_backup', 'r').read())
+            cursor.execute(backup_file.read())
         self.connection.commit()
         print(f'----> 10 tables was recently created')
