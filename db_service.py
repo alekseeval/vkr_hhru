@@ -120,7 +120,8 @@ class DbService:
                     INSERT INTO specialization
                     VALUES (%(id)s, %(name)s, %(profarea_id)s, %(profarea_name)s)
                     ON CONFLICT (id)
-                    DO UPDATE SET (name, profarea_id, profarea_name) = (%(name)s, %(profarea_id)s, %(profarea_name)s)
+                    DO UPDATE SET 
+                        (name, profarea_id, profarea_name) = (%(name)s, %(profarea_id)s, %(profarea_name)s)
                 ''', specialization)
 
         cursor.close()
@@ -133,11 +134,15 @@ class DbService:
     #
     # id_list   --  list of vacancies as dictionaries od data with 'id' field
     # --------------------------------------------------------------------------------------
-    def save_vacancies_id(self, vacancies_list):
+    def save_vacancies(self, vacancies_list):
         assert self.connection is not None
         with self.connection.cursor() as cursor:
             for vac in vacancies_list:
-                cursor.execute('INSERT INTO vacancies_id (id) VALUES (%s) ON CONFLICT DO NOTHING;', (vac.get('id'), ))
+                cursor.execute('''
+                INSERT INTO vacancies_id (id) 
+                VALUES (%s) 
+                ON CONFLICT DO NOTHING;
+                ''', (vac.get('id'), ))
         self.connection.commit()
         print(f'----> Into table vacancies_id was inserted {len(vacancies_list)} values')
 
