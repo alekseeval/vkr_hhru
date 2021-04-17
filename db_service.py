@@ -143,19 +143,104 @@ class DbService:
     # --------------------------------------------------------------------------------------
     # Сохраняет в таблицу vacancies_id данные о id вакансий
     #
-    # id_list   --  list of vacancies as dictionaries od data with 'id' field
+    # id_list   --  list of vacancies as dictionaries or data with 'id' field
     # --------------------------------------------------------------------------------------
     def save_vacancies(self, vacancies_list):
 
-        with self.connection.cursor() as cursor:
-            for vac in vacancies_list:
-                cursor.execute('''
-                INSERT INTO vacancies_id (id) 
-                VALUES (%s) 
-                ON CONFLICT DO NOTHING;
-                ''', (vac.get('id'), ))
-        self.connection.commit()
-        print(f'----> Into table vacancies_id was inserted {len(vacancies_list)} values')
+        for vacancy in vacancies_list:
+
+            area = vacancy.get('area')
+            if area is not None:
+                Area.get_or_create(id=area.get('id'), name=area.get('name'))
+            else:
+                area = {}
+
+            schedule = vacancy.get('schedule')
+            if schedule is not None:
+                Schedule.get_or_create(id=schedule.get('id'), name=schedule.get('name'))
+            else:
+                schedule = {}
+
+            experience = vacancy.get('experience')
+            if experience is not None:
+                Experience.get_or_create(id=experience.get('id'), name=experience.get('name'))
+            else:
+                experience = {}
+
+            address = vacancy.get('address')
+            if address is not None:
+                Address.get_or_create(lat=address.get('lat'), lng=address.get('lng'), street=address.get('street'),
+                                      building=address.get('building'), description=address.get('description'),
+                                      city=address.get('city'))
+                metros = vacancy.get('metro_stations')
+                if metros is not None:
+                    for metro in metros:
+                        MetroStation.get_or_create(lat=metro.get('lat'), lng=metro.get('lng'),
+                                                   station_id=metro.get('station_id'),
+                                                   station_name=metro.get('station_name'),
+                                                   line_id=metro.get('line_id'), line_name=metro.get('line_name'))
+                        AddressMetro.get_or_create(address_lat=address.get('lat'), address_lng=address.get('lng'),
+                                                   metro_station_lat=metro.get('lat'),
+                                                   metro_station_lng=metro.get('lng'))
+            else:
+                address = {}
+
+            employment = vacancy.get('employment')
+            if employment is not None:
+                Employment.get_or_create(id=employment.get('id'), name=employment.get('name'))
+            else:
+                employment = {'id': None}
+
+            salary = vacancy.get('salary')
+            if salary is None:
+                salary = {}
+
+            b_type = vacancy.get('billing_type')
+            if b_type is None:
+                b_type = {}
+
+            Vacancy.get_or_create(
+                id=vacancy.get('id'),
+                premium=vacancy.get('name'),
+                description=vacancy.get('description'),
+                branded_description=vacancy.get('branded_description'),
+                accept_handicapped=vacancy.get('accept_handicapped'),
+                accept_kids=vacancy.get('accept_kids'),
+                accept_incomplete_resumes=vacancy.get('accept_incomplete_resumes'),
+                salary_from=salary.get('from'),
+                salary_to=salary.get('to'),
+                salary_gross=salary.get('gross'),
+                archived=vacancy.get('archived'),
+                created_at=vacancy.get('created_at'),
+                published_at=vacancy.get('published_at'),
+                employer_id=vacancy.get('employer').get('id'),
+                has_test=vacancy.get('has_test'),
+                vacancy_type=vacancy.get('type').get('id'),
+                vacancy_billing_type=b_type.get('id'),
+
+                area_id=area.get('id'),
+                schedule=schedule.get('id'),
+                experience=experience.get('id'),
+                address_lat=address.get('lat'),
+                address_lng=address.get('lng'),
+                employment_id=employment.get('id'),
+                salary_currency_code=salary.get('currency')
+            )
+
+            skills = vacancy.get('key_skills')
+            if skills is not None:
+                for skill in skills:
+                    VacancySkill.get_or_create(vacancy_id=vacancy.get('id'), skill_name=skill.get('name'))
+
+            specializations = vacancy.get('specializations')
+            if specializations is not None:
+                for spec in specializations:
+                    Specialization.get_or_create(id=spec.get('id'), name=spec.get('name'),
+                                                 profarea_id=spec.get('profarea_id'),
+                                                 profarea_name=spec.get('profarea_name'))
+                    SpecializationVacancy.get_or_create(vacancy_id=vacancy.get('id'), specialization_id=spec.get('id'))
+
+        print(f'----> Into table vacancies_id was inserted {len(vacancies_list)} vacancies')
 
     # --------------------------------------------------------------------------------------
     # Выполняет скрипт из файла
