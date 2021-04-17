@@ -28,8 +28,8 @@ SET default_table_access_method = heap;
 --
 
 CREATE TABLE public.address (
-    lat numeric NOT NULL,
-    lng numeric NOT NULL,
+    lat numeric,
+    lng numeric,
     street text,
     building text,
     description text,
@@ -115,8 +115,8 @@ ALTER TABLE public.experience OWNER TO admin;
 --
 
 CREATE TABLE public.metro_station (
-    lat numeric NOT NULL,
-    lng numeric NOT NULL,
+    lat numeric,
+    lng numeric,
     station_id text,
     station_name text,
     line_id text,
@@ -228,14 +228,6 @@ CREATE TABLE public.vacancy_skill (
 
 ALTER TABLE public.vacancy_skill OWNER TO admin;
 
---
--- TOC entry 2906 (class 2606 OID 56685)
--- Name: address address_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.address
-    ADD CONSTRAINT address_pkey PRIMARY KEY (lat, lng);
-
 
 --
 -- TOC entry 2908 (class 2606 OID 56687)
@@ -274,15 +266,6 @@ ALTER TABLE ONLY public.experience
 
 
 --
--- TOC entry 2916 (class 2606 OID 56695)
--- Name: metro_station metro_station_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.metro_station
-    ADD CONSTRAINT metro_station_pkey PRIMARY KEY (lat, lng);
-
-
---
 -- TOC entry 2918 (class 2606 OID 56697)
 -- Name: schedule schedule_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
@@ -318,22 +301,6 @@ ALTER TABLE ONLY public.vacancies
     ADD CONSTRAINT vacancies_pkey PRIMARY KEY (id);
 
 
---
--- TOC entry 2925 (class 2606 OID 56702)
--- Name: address_metro address_metro_address_lat_address_lng_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.address_metro
-    ADD CONSTRAINT address_metro_address_lat_address_lng_fkey FOREIGN KEY (address_lat, address_lng) REFERENCES public.address(lat, lng);
-
-
---
--- TOC entry 2926 (class 2606 OID 56707)
--- Name: address_metro address_metro_metro_station_lat_metro_station_lng_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.address_metro
-    ADD CONSTRAINT address_metro_metro_station_lat_metro_station_lng_fkey FOREIGN KEY (metro_station_lat, metro_station_lng) REFERENCES public.metro_station(lat, lng);
 
 
 --
@@ -353,14 +320,6 @@ ALTER TABLE ONLY public.specialization_vacancy
 ALTER TABLE ONLY public.specialization_vacancy
     ADD CONSTRAINT specialization_vacancy_vacancy_id_fkey FOREIGN KEY (vacancy_id) REFERENCES public.vacancies(id);
 
-
---
--- TOC entry 2930 (class 2606 OID 56736)
--- Name: vacancies vacancies_address_lat_address_lng_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.vacancies
-    ADD CONSTRAINT vacancies_address_lat_address_lng_fkey FOREIGN KEY (address_lat, address_lng) REFERENCES public.address(lat, lng);
 
 
 --
