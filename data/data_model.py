@@ -26,7 +26,7 @@ class Address(Model):
     lng = DecimalField()
 
     class Meta:
-        primary_key = CompositeKey('lat', 'lng')
+        primary_key = False
         db_table = 'address'
         database = db_handle
 
@@ -40,7 +40,7 @@ class MetroStation(Model):
     lng = DecimalField()
 
     class Meta:
-        primary_key = CompositeKey('lat', 'lng')
+        primary_key = False
         db_table = 'metro_station'
         database = db_handle
 
@@ -119,20 +119,20 @@ class Employment(Model):
 class Vacancy(Model):
     id = CharField(max_length=32, primary_key=True)
     name = TextField()
-    description = TextField()
-    area_id = ForeignKeyField(Area)
-    branded_description = TextField()
-    schedule = ForeignKeyField(Schedule)
+    description = TextField(column_name='description')
+    area_id = ForeignKeyField(Area, column_name='area_id')
+    branded_description = TextField(column_name='branded_description')
+    schedule = ForeignKeyField(Schedule, column_name='schedule')
     accept_handicapped = BooleanField()
     accept_kids = BooleanField()
     accept_incomplete_resumes = BooleanField()
-    experience = ForeignKeyField(Experience)
+    experience = ForeignKeyField(Experience, column_name='experience')
     address_lat = DecimalField()
     address_lng = DecimalField()
-    employment_id = ForeignKeyField(Employment)
+    employment_id = ForeignKeyField(Employment, column_name='employment_id')
     salary_from = DecimalField()
     salary_to = DecimalField()
-    salary_currency_code = ForeignKeyField(Currency)
+    salary_currency_code = ForeignKeyField(Currency, column_name='salary_currency_code')
     salary_gross = BooleanField()
     archived = BooleanField()
     created_at = DateTimeField()
@@ -149,18 +149,20 @@ class Vacancy(Model):
 
 
 class SpecializationVacancy(Model):
-    vacancy_id = ForeignKeyField(Vacancy)
-    specialization_id = ForeignKeyField(Specialization)
+    vacancy_id = ForeignKeyField(Vacancy, column_name='vacancy_id')
+    specialization_id = ForeignKeyField(Specialization, column_name='specialization_id')
 
     class Meta:
+        primary_key = False
         db_table = 'specialization_vacancy'
         database = db_handle
 
 
 class VacancySkill(Model):
-    vacancy_id = ForeignKeyField(Vacancy)
+    vacancy_id = ForeignKeyField(Vacancy, column_name='vacancy_id')
     skill_name = TextField()
 
     class Meta:
+        primary_key = False
         db_table = 'vacancy_skill'
         database = db_handle

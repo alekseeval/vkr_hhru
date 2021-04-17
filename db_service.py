@@ -25,12 +25,10 @@ class DbService:
             port=self.port
         )
         assert self.connection.closed == 0
-        print(f'--> Connection to {self.db_name} database was opened')
 
     def close_connection(self):
         self.connection.close()
         self.connection = None
-        print(f'--> Connection to {self.db_name} database was closed')
 
     # --------------------------------------------------------------------------------------
     # Сохраняет данные в таблицу schedule
@@ -201,8 +199,9 @@ class DbService:
 
             Vacancy.get_or_create(
                 id=vacancy.get('id'),
-                premium=vacancy.get('name'),
+                name=vacancy.get('name'),
                 description=vacancy.get('description'),
+                premium=vacancy.get('premium'),
                 branded_description=vacancy.get('branded_description'),
                 accept_handicapped=vacancy.get('accept_handicapped'),
                 accept_kids=vacancy.get('accept_kids'),
@@ -248,8 +247,9 @@ class DbService:
     # file      --  файл в котором записан скрипт
     # --------------------------------------------------------------------------------------
     def execute_script(self, file):
-        assert self.connection is not None
+        self.open_connection()
         with self.connection.cursor() as cursor:
             cursor.execute(file.read())
         self.connection.commit()
+        self.close_connection()
         print(f'----> Script was successfully executed')
