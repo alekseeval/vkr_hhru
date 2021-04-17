@@ -5,7 +5,7 @@ class DbService:
 
     connection = None
 
-    def __init__(self, db_name, user, password, host='localhost', port='5433'):
+    def __init__(self, db_name, user, password, host='localhost', port='5432'):
         self.db_name = db_name
         self.user = user
         self.password = password
@@ -37,6 +37,7 @@ class DbService:
     # schedules     --  список словарей {'id':some_str, 'name':some_str}
     # --------------------------------------------------------------------------------------
     def add_to_schedule_table(self, schedules):
+        self.open_connection()
         with self.connection.cursor() as cursor:
             for schedule in schedules:
                 cursor.execute('''
@@ -46,6 +47,7 @@ class DbService:
                     DO UPDATE SET name = %(name)s
                 ''', schedule)
         self.connection.commit()
+        self.close_connection()
         print(f'----> Into table schedule was inserted {len(schedules)} values')
 
     # --------------------------------------------------------------------------------------
@@ -54,6 +56,7 @@ class DbService:
     # experience_list     --  список словарей {'id':some_str, 'name':some_str}
     # --------------------------------------------------------------------------------------
     def add_to_experience_table(self, experience_list):
+        self.open_connection()
         with self.connection.cursor() as cursor:
             for experience in experience_list:
                 cursor.execute('''
@@ -63,6 +66,7 @@ class DbService:
                     DO UPDATE SET name = %(name)s
                 ''', experience)
         self.connection.commit()
+        self.close_connection()
         print(f'----> Into table experience was inserted {len(experience_list)} values')
 
     # --------------------------------------------------------------------------------------
@@ -71,6 +75,7 @@ class DbService:
     # currencies        --  список словарей с данными в формате который предоставляет API
     # --------------------------------------------------------------------------------------
     def add_to_currency_table(self, currencies):
+        self.open_connection()
         with self.connection.cursor() as cursor:
             for currency in currencies:
                 cursor.execute('''
@@ -80,6 +85,7 @@ class DbService:
                     DO UPDATE SET (abbr, name, rate, is_default) = (%(abbr)s, %(name)s, %(rate)s, %(default)s)
                 ''', currency)
         self.connection.commit()
+        self.close_connection()
         print(f'----> Into table currency was inserted {len(currencies)} values')
 
     # --------------------------------------------------------------------------------------
@@ -88,6 +94,7 @@ class DbService:
     # employments       --  список словарей с данными в формате который предоставляет API
     # --------------------------------------------------------------------------------------
     def add_to_employment_table(self, employments):
+        self.open_connection()
         with self.connection.cursor() as cursor:
             for employment in employments:
                 cursor.execute('''
@@ -97,6 +104,7 @@ class DbService:
                     DO UPDATE SET name = %(name)s
                 ''', employment)
         self.connection.commit()
+        self.close_connection()
         print(f'----> Into table employment was inserted {len(employments)} values')
 
     # TODO: Удалить переменную для бедага debug_number_of_rows (в будущем)
@@ -106,6 +114,7 @@ class DbService:
     # specializations       --  список словарей с данными в формате который предоставляет API
     # --------------------------------------------------------------------------------------
     def add_to_specialization_table(self, specializations):
+        self.open_connection()
         cursor = self.connection.cursor()
 
         debug_number_of_rows = 0
@@ -126,6 +135,7 @@ class DbService:
 
         cursor.close()
         self.connection.commit()
+        self.close_connection()
         print(f'----> Into table specialization was inserted {debug_number_of_rows} values')
 
     # TODO: Переделать метод под запись полных данных о вакансиях
@@ -135,7 +145,7 @@ class DbService:
     # id_list   --  list of vacancies as dictionaries od data with 'id' field
     # --------------------------------------------------------------------------------------
     def save_vacancies(self, vacancies_list):
-        assert self.connection is not None
+
         with self.connection.cursor() as cursor:
             for vac in vacancies_list:
                 cursor.execute('''
@@ -152,6 +162,7 @@ class DbService:
     # file      --  файл в котором записан скрипт
     # --------------------------------------------------------------------------------------
     def execute_script(self, file):
+        assert self.connection is not None
         with self.connection.cursor() as cursor:
             cursor.execute(file.read())
         self.connection.commit()
