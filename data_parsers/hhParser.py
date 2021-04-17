@@ -64,10 +64,15 @@ class HhParser:
             data = self.get_vacancies_by_request(req_params)
             data_book += data.get('items')
 
-        # Запись полученных данных в бд для дальнейшей работы
-        self.db_service.save_vacancies(data_book)
+        # Получение полных данных о вакансиях
+        vacancies_info = []
+        for data in data_book:
+            vacancies_info.append(self.get_vacancy_info_by_id(data.get('id')))
 
-        return data_book
+        # Запись полученных данных в бд для дальнейшей работы
+        self.db_service.save_vacancies(vacancies_info)
+
+        return vacancies_info
 
     # --------------------------------------------------------------------------------------
     # vacancy_id    --  id вакансии на сайте
