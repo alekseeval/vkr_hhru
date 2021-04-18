@@ -137,11 +137,8 @@ class DbService:
         self.close_connection()
         print(f'----> Into table specialization was inserted {debug_number_of_rows} values')
 
-    # TODO: Переделать метод под запись полных данных о вакансиях
     # --------------------------------------------------------------------------------------
-    # Сохраняет в таблицу vacancies_id данные о id вакансий
-    #
-    # id_list   --  list of vacancies as dictionaries or data with 'id' field
+    # Сохраняет в таблицу vacancies данные о передаваемых вакансиях
     # --------------------------------------------------------------------------------------
     def save_vacancies(self, vacancies_list):
 
