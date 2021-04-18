@@ -45,7 +45,7 @@ class HhParser:
     # @return       --  инофрмация о вакансиях в виде массива словарей, где каждый словарь
     #                   отвечает за отдельную вакансию
     # --------------------------------------------------------------------------------------
-    def __get_vacancies_from_all_pages(self, req_params=None):
+    def get_vacancies_from_all_pages(self, req_params=None):
         # Проверка наличая параметров запроса
         if req_params is None:
             req_params = {}
@@ -53,9 +53,6 @@ class HhParser:
             req_params['page'] = 0
         if 'per_page' not in req_params:
             req_params['per_page'] = 100
-
-        # Подключение к базе данных
-        self.db_service.open_connection()
 
         # Заполнение данными о вакансиях с первой страницы запроса
         data = self.get_vacancies_by_request(req_params)
@@ -67,13 +64,15 @@ class HhParser:
             data = self.get_vacancies_by_request(req_params)
             data_book += data.get('items')
 
+        # Получение полных данных о вакансиях
+        vacancies_info = []
+        for data in data_book:
+            vacancies_info.append(self.get_vacancy_info_by_id(data.get('id')))
+
         # Запись полученных данных в бд для дальнейшей работы
-        self.db_service.save_vacancies_id(data_book)
+        self.db_service.save_vacancies(vacancies_info)
 
-        # Разрыв соединения с базой данных
-        self.db_service.close_connection()
-
-        return data_book
+        return vacancies_info
 
     # --------------------------------------------------------------------------------------
     # vacancy_id    --  id вакансии на сайте
@@ -90,8 +89,6 @@ class HhParser:
     # Метод выгружает в базу данных словари предоставляемые API
     # --------------------------------------------------------------------------------------
     def load_to_db_dictionaries(self):
-        # Открытие соединения с БД
-        self.db_service.open_connection()
 
         # Получение данных справочника dictionaries и занесение их в БД
         request = requests.get(f'{self.API_URL}/dictionaries')
@@ -107,6 +104,3 @@ class HhParser:
         data = json.loads(request.content.decode())
         request.close()
         self.db_service.add_to_specialization_table(data)
-
-        # Закрытие соединения с БД
-        self.db_service.close_connection()

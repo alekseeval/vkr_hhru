@@ -1,0 +1,384 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 13.2
+-- Dumped by pg_dump version 13.2
+
+-- Started on 2021-04-18 01:44:08
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+-- SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+-- SET default_table_access_method = heap;
+
+--
+-- TOC entry 200 (class 1259 OID 56633)
+-- Name: address; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.address (
+    lat numeric,
+    lng numeric,
+    street text,
+    building text,
+    description text,
+    city text
+);
+
+
+ALTER TABLE public.address OWNER TO admin;
+
+--
+-- TOC entry 201 (class 1259 OID 56639)
+-- Name: address_metro; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.address_metro (
+    address_lat numeric,
+    address_lng numeric,
+    metro_station_lat numeric,
+    metro_station_lng numeric
+);
+
+
+ALTER TABLE public.address_metro OWNER TO admin;
+
+--
+-- TOC entry 202 (class 1259 OID 56645)
+-- Name: area; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.area (
+    id character varying(32) NOT NULL,
+    name text
+);
+
+
+ALTER TABLE public.area OWNER TO admin;
+
+--
+-- TOC entry 203 (class 1259 OID 56651)
+-- Name: currency; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.currency (
+    code character varying(3) NOT NULL,
+    abbr character varying(10),
+    name character varying(20),
+    rate numeric,
+    is_default boolean
+);
+
+
+ALTER TABLE public.currency OWNER TO admin;
+
+--
+-- TOC entry 204 (class 1259 OID 56657)
+-- Name: employment; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.employment (
+    id character varying(10) NOT NULL,
+    name character varying(22)
+);
+
+
+ALTER TABLE public.employment OWNER TO admin;
+
+--
+-- TOC entry 205 (class 1259 OID 56660)
+-- Name: experience; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.experience (
+    id text NOT NULL,
+    name text
+);
+
+
+ALTER TABLE public.experience OWNER TO admin;
+
+--
+-- TOC entry 206 (class 1259 OID 56666)
+-- Name: metro_station; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.metro_station (
+    lat numeric,
+    lng numeric,
+    station_id text,
+    station_name text,
+    line_id text,
+    line_name text
+);
+
+
+ALTER TABLE public.metro_station OWNER TO admin;
+
+--
+-- TOC entry 207 (class 1259 OID 56672)
+-- Name: schedule; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.schedule (
+    id character varying(12) NOT NULL,
+    name character varying(16)
+);
+
+
+ALTER TABLE public.schedule OWNER TO admin;
+
+--
+-- TOC entry 208 (class 1259 OID 56675)
+-- Name: specialization; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.specialization (
+    id character varying(10) NOT NULL,
+    name text,
+    profarea_id character varying(5),
+    profarea_name text
+);
+
+
+ALTER TABLE public.specialization OWNER TO admin;
+
+--
+-- TOC entry 212 (class 1259 OID 56762)
+-- Name: specialization_vacancy; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.specialization_vacancy (
+    vacancy_id character varying(32),
+    specialization_id character varying(10)
+);
+
+
+ALTER TABLE public.specialization_vacancy OWNER TO admin;
+
+--
+-- TOC entry 210 (class 1259 OID 56713)
+-- Name: vacancies; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.vacancies (
+    id character varying(32) NOT NULL,
+    name text,
+    description text,
+    area_id character varying(32),
+    branded_description text,
+    schedule character varying(12),
+    accept_handicapped boolean,
+    accept_kids boolean,
+    accept_incomplete_resumes boolean,
+    experience text,
+    address_lat numeric,
+    address_lng numeric,
+    employment_id character varying(10),
+    salary_from numeric,
+    salary_to numeric,
+    salary_currency_code character varying(3),
+    salary_gross boolean,
+    archived boolean,
+    created_at timestamp without time zone,
+    published_at timestamp without time zone,
+    employer_id character varying(32),
+    has_test boolean,
+    premium boolean,
+    vacancy_type character varying(10),
+    vacancy_billing_type character varying(15)
+);
+
+
+ALTER TABLE public.vacancies OWNER TO admin;
+
+--
+-- TOC entry 209 (class 1259 OID 56681)
+-- Name: vacancies_id; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.vacancies_id (
+    id character varying(32) NOT NULL
+);
+
+
+ALTER TABLE public.vacancies_id OWNER TO admin;
+
+--
+-- TOC entry 211 (class 1259 OID 56751)
+-- Name: vacancy_skill; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.vacancy_skill (
+    vacancy_id character varying(32),
+    skill_name text
+);
+
+
+ALTER TABLE public.vacancy_skill OWNER TO admin;
+
+
+--
+-- TOC entry 2908 (class 2606 OID 56687)
+-- Name: area area_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.area
+    ADD CONSTRAINT area_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2910 (class 2606 OID 56689)
+-- Name: currency currency_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.currency
+    ADD CONSTRAINT currency_pkey PRIMARY KEY (code);
+
+
+--
+-- TOC entry 2912 (class 2606 OID 56691)
+-- Name: employment employment_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.employment
+    ADD CONSTRAINT employment_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2914 (class 2606 OID 56693)
+-- Name: experience experience_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.experience
+    ADD CONSTRAINT experience_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2918 (class 2606 OID 56697)
+-- Name: schedule schedule_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.schedule
+    ADD CONSTRAINT schedule_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2920 (class 2606 OID 56699)
+-- Name: specialization specialization_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.specialization
+    ADD CONSTRAINT specialization_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2922 (class 2606 OID 56701)
+-- Name: vacancies_id vacancies_id_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.vacancies_id
+    ADD CONSTRAINT vacancies_id_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2924 (class 2606 OID 56720)
+-- Name: vacancies vacancies_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.vacancies
+    ADD CONSTRAINT vacancies_pkey PRIMARY KEY (id);
+
+
+
+
+--
+-- TOC entry 2934 (class 2606 OID 56765)
+-- Name: specialization_vacancy specialization_vacancy_specialization_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.specialization_vacancy
+    ADD CONSTRAINT specialization_vacancy_specialization_id_fkey FOREIGN KEY (specialization_id) REFERENCES public.specialization(id);
+
+
+--
+-- TOC entry 2935 (class 2606 OID 56770)
+-- Name: specialization_vacancy specialization_vacancy_vacancy_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.specialization_vacancy
+    ADD CONSTRAINT specialization_vacancy_vacancy_id_fkey FOREIGN KEY (vacancy_id) REFERENCES public.vacancies(id);
+
+
+
+--
+-- TOC entry 2927 (class 2606 OID 56721)
+-- Name: vacancies vacancies_area_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.vacancies
+    ADD CONSTRAINT vacancies_area_id_fkey FOREIGN KEY (area_id) REFERENCES public.area(id);
+
+
+--
+-- TOC entry 2931 (class 2606 OID 56741)
+-- Name: vacancies vacancies_employment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.vacancies
+    ADD CONSTRAINT vacancies_employment_id_fkey FOREIGN KEY (employment_id) REFERENCES public.employment(id);
+
+
+--
+-- TOC entry 2929 (class 2606 OID 56731)
+-- Name: vacancies vacancies_experience_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.vacancies
+    ADD CONSTRAINT vacancies_experience_fkey FOREIGN KEY (experience) REFERENCES public.experience(id);
+
+
+--
+-- TOC entry 2932 (class 2606 OID 56746)
+-- Name: vacancies vacancies_salary_currency_code_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.vacancies
+    ADD CONSTRAINT vacancies_salary_currency_code_fkey FOREIGN KEY (salary_currency_code) REFERENCES public.currency(code);
+
+
+--
+-- TOC entry 2928 (class 2606 OID 56726)
+-- Name: vacancies vacancies_schedule_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.vacancies
+    ADD CONSTRAINT vacancies_schedule_fkey FOREIGN KEY (schedule) REFERENCES public.schedule(id);
+
+
+--
+-- TOC entry 2933 (class 2606 OID 56757)
+-- Name: vacancy_skill vacancy_skill_vacancy_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.vacancy_skill
+    ADD CONSTRAINT vacancy_skill_vacancy_id_fkey FOREIGN KEY (vacancy_id) REFERENCES public.vacancies(id);
+
+
+-- Completed on 2021-04-18 01:44:09
+
+--
+-- PostgreSQL database dump complete
+--
+
