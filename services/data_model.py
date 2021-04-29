@@ -1,7 +1,12 @@
-from services.db_service import *
 from peewee import *
 
-db_handle = None
+db_handle = PostgresqlDatabase(
+            'hh_ru',
+            user='admin',
+            password='admin',
+            host='localhost',
+            port='5432'
+        )
 
 
 class BaseModel(Model):

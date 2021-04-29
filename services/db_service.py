@@ -1,20 +1,9 @@
-import services.data_model as model
-
-from peewee import *
-
-
 class DbService:
+    import services.data_model as model
 
-    def __init__(self, db_name, user, password, host='localhost', port='5432'):
-        self.db_handle = PostgresqlDatabase(
-            db_name,
-            user=user,
-            password=password,
-            host=host,
-            port=port
-        )
+    def __init__(self):
+        self.db_handle = self.model.db_handle
         self.connection = self.db_handle.connection()
-        model.db_handle = self.db_handle
 
     # --------------------------------------------------------------------------------------
     # Сохраняет данные в таблицу schedule
@@ -122,44 +111,47 @@ class DbService:
 
             area = vacancy.get('area')
             if area is not None:
-                model.Area.get_or_create(id=area.get('id'), name=area.get('name'))
+                self.model.Area.get_or_create(id=area.get('id'), name=area.get('name'))
             else:
                 area = {}
 
             schedule = vacancy.get('schedule')
             if schedule is not None:
-                model.Schedule.get_or_create(id=schedule.get('id'), name=schedule.get('name'))
+                self.model.Schedule.get_or_create(id=schedule.get('id'), name=schedule.get('name'))
             else:
                 schedule = {}
 
             experience = vacancy.get('experience')
             if experience is not None:
-                model.Experience.get_or_create(id=experience.get('id'), name=experience.get('name'))
+                self.model.Experience.get_or_create(id=experience.get('id'), name=experience.get('name'))
             else:
                 experience = {}
 
             address = vacancy.get('address')
             if address is not None:
-                model.Address.get_or_create(lat=address.get('lat'), lng=address.get('lng'),
-                                            street=address.get('street'),
-                                            building=address.get('building'), description=address.get('description'),
-                                            city=address.get('city'))
+                self.model.Address.get_or_create(lat=address.get('lat'), lng=address.get('lng'),
+                                                 street=address.get('street'),
+                                                 building=address.get('building'),
+                                                 description=address.get('description'),
+                                                 city=address.get('city'))
                 metros = vacancy.get('metro_stations')
                 if metros is not None:
                     for metro in metros:
-                        model.MetroStation.get_or_create(lat=metro.get('lat'), lng=metro.get('lng'),
-                                                         station_id=metro.get('station_id'),
-                                                         station_name=metro.get('station_name'),
-                                                         line_id=metro.get('line_id'), line_name=metro.get('line_name'))
-                        model.AddressMetro.get_or_create(address_lat=address.get('lat'), address_lng=address.get('lng'),
-                                                         metro_station_lat=metro.get('lat'),
-                                                         metro_station_lng=metro.get('lng'))
+                        self.model.MetroStation.get_or_create(lat=metro.get('lat'), lng=metro.get('lng'),
+                                                              station_id=metro.get('station_id'),
+                                                              station_name=metro.get('station_name'),
+                                                              line_id=metro.get('line_id'),
+                                                              line_name=metro.get('line_name'))
+                        self.model.AddressMetro.get_or_create(address_lat=address.get('lat'),
+                                                              address_lng=address.get('lng'),
+                                                              metro_station_lat=metro.get('lat'),
+                                                              metro_station_lng=metro.get('lng'))
             else:
                 address = {}
 
             employment = vacancy.get('employment')
             if employment is not None:
-                model.Employment.get_or_create(id=employment.get('id'), name=employment.get('name'))
+                self.model.Employment.get_or_create(id=employment.get('id'), name=employment.get('name'))
             else:
                 employment = {'id': None}
 
@@ -171,7 +163,7 @@ class DbService:
             if b_type is None:
                 b_type = {}
 
-            model.Vacancy.get_or_create(
+            self.model.Vacancy.get_or_create(
                 id=vacancy.get('id'),
                 name=vacancy.get('name'),
                 description=vacancy.get('description'),
@@ -203,16 +195,16 @@ class DbService:
             skills = vacancy.get('key_skills')
             if skills is not None:
                 for skill in skills:
-                    model.VacancySkill.get_or_create(vacancy_id=vacancy.get('id'), skill_name=skill.get('name'))
+                    self.model.VacancySkill.get_or_create(vacancy_id=vacancy.get('id'), skill_name=skill.get('name'))
 
             specializations = vacancy.get('specializations')
             if specializations is not None:
                 for spec in specializations:
-                    model.Specialization.get_or_create(id=spec.get('id'), name=spec.get('name'),
-                                                       profarea_id=spec.get('profarea_id'),
-                                                       profarea_name=spec.get('profarea_name'))
-                    model.SpecializationVacancy.get_or_create(vacancy_id=vacancy.get('id'),
-                                                              specialization_id=spec.get('id'))
+                    self.model.Specialization.get_or_create(id=spec.get('id'), name=spec.get('name'),
+                                                            profarea_id=spec.get('profarea_id'),
+                                                            profarea_name=spec.get('profarea_name'))
+                    self.model.SpecializationVacancy.get_or_create(vacancy_id=vacancy.get('id'),
+                                                                   specialization_id=spec.get('id'))
 
         print(f'----> Into table vacancies_id was inserted {len(vacancies_list)} vacancies')
 
