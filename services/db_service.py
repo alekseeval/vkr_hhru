@@ -1,5 +1,5 @@
 import psycopg2
-from data.data_model import *
+from services.data_model import *
 
 
 class DbService:

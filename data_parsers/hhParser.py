@@ -4,7 +4,7 @@
 import requests
 import json
 
-from db_service import DbService
+from services.db_service import DbService
 from typing import Final
 
 
