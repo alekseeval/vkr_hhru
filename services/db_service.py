@@ -10,7 +10,8 @@ class DbService:
             db_name,
             user=user,
             password=password,
-            host=host
+            host=host,
+            port=port
         )
         self.connection = self.db_handle.connection()
         model.db_handle = self.db_handle
@@ -139,19 +140,20 @@ class DbService:
 
             address = vacancy.get('address')
             if address is not None:
-                model.Address.get_or_create(lat=address.get('lat'), lng=address.get('lng'), street=address.get('street'),
-                                      building=address.get('building'), description=address.get('description'),
-                                      city=address.get('city'))
+                model.Address.get_or_create(lat=address.get('lat'), lng=address.get('lng'),
+                                            street=address.get('street'),
+                                            building=address.get('building'), description=address.get('description'),
+                                            city=address.get('city'))
                 metros = vacancy.get('metro_stations')
                 if metros is not None:
                     for metro in metros:
                         model.MetroStation.get_or_create(lat=metro.get('lat'), lng=metro.get('lng'),
-                                                   station_id=metro.get('station_id'),
-                                                   station_name=metro.get('station_name'),
-                                                   line_id=metro.get('line_id'), line_name=metro.get('line_name'))
+                                                         station_id=metro.get('station_id'),
+                                                         station_name=metro.get('station_name'),
+                                                         line_id=metro.get('line_id'), line_name=metro.get('line_name'))
                         model.AddressMetro.get_or_create(address_lat=address.get('lat'), address_lng=address.get('lng'),
-                                                   metro_station_lat=metro.get('lat'),
-                                                   metro_station_lng=metro.get('lng'))
+                                                         metro_station_lat=metro.get('lat'),
+                                                         metro_station_lng=metro.get('lng'))
             else:
                 address = {}
 
@@ -207,9 +209,10 @@ class DbService:
             if specializations is not None:
                 for spec in specializations:
                     model.Specialization.get_or_create(id=spec.get('id'), name=spec.get('name'),
-                                                 profarea_id=spec.get('profarea_id'),
-                                                 profarea_name=spec.get('profarea_name'))
-                    model.SpecializationVacancy.get_or_create(vacancy_id=vacancy.get('id'), specialization_id=spec.get('id'))
+                                                       profarea_id=spec.get('profarea_id'),
+                                                       profarea_name=spec.get('profarea_name'))
+                    model.SpecializationVacancy.get_or_create(vacancy_id=vacancy.get('id'),
+                                                              specialization_id=spec.get('id'))
 
         print(f'----> Into table vacancies_id was inserted {len(vacancies_list)} vacancies')
 
