@@ -109,6 +109,11 @@ class DbService:
 
         for vacancy in vacancies_list:
 
+            # Если вакансия уже существует, то ничего не делаем
+            query = self.model.Vacancy.select().where(self.model.Vacancy.id == vacancy.get('id'))
+            if query.exists():
+                continue
+
             area = vacancy.get('area')
             if area is not None:
                 self.model.Area.get_or_create(id=area.get('id'), name=area.get('name'))
