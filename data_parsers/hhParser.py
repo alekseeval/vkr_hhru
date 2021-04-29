@@ -1,9 +1,10 @@
 # TODO: Додумать работу с req_param в методе get_all_vacancies (какие параметры стоит добавлять в словарь и стоит ли)
 #       Может не стоит вообще задавать дефолтное значение
-# TODO: Заменить assert'ы для ошибок в запросах, на соответствующие обработки
+# TODO: Заменить assert для ошибок в запросах, на соответствующие обработки
 
 import requests
 import json
+from progress.bar import Bar
 
 from services.db_service import DbService
 from typing import Final
@@ -59,16 +60,24 @@ class HhParser:
         data = self.get_vacancies_by_request(req_params)
         data_book = data.get('items')
 
-        # Получние данных с оставшихся страниц
+        # Получние данных с оставшихся страниц NOTE: WITH PROGRESS BAR
+        bar = Bar(' -->Обработка страниц запроса ', max=data.get('pages'))
+        bar.start()
+        bar.next()
         while data.get('page') < data.get('pages')-1:
             req_params['page'] += 1
             data = self.get_vacancies_by_request(req_params)
             data_book += data.get('items')
+            bar.next()
+        bar.finish()
 
-        # Получение полных данных о вакансиях
+        # Получение полных данных о вакансиях NOTE: WITH PROGRESS BAR
         vacancies_info = []
+        bar = Bar(' -->Получение данных о вакансиях ', max=len(data_book))
         for data in data_book:
             vacancies_info.append(self.get_vacancy_info_by_id(data.get('id')))
+            bar.next()
+        bar.finish()
 
         # Запись полученных данных в бд для дальнейшей работы
         self.db_service.save_vacancies(vacancies_info)
