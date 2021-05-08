@@ -95,3 +95,16 @@ class HhParser:
         data = json.loads(request.content.decode())
         request.close()
         return data
+
+    # --------------------------------------------------------------------------------------
+    # Метод выполняет запрос к API с переданными параметрами
+    #
+    # req_param     -- словарь параметров запроса к API
+    # sub_href      -- раздел API, к которому осуществляется доступ (пример: .../vacancies)
+    # @return       -- dict объкт с данными по запросу
+    # --------------------------------------------------------------------------------------
+    def execute_request(self, req_param, sub_href='vacancies'):
+        request = requests.get(f'{self.API_URL}/{sub_href}', req_param)
+        data = json.loads(request.content.decode())
+        request.close()
+        return data
