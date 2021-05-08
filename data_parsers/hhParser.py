@@ -64,8 +64,8 @@ class HhParser:
         data_book = data.get('items')
 
         # Получние данных с оставшихся страниц NOTE: WITH PROGRESS BAR
-        while data.get('page') < data.get('pages')-1:
-            req_params['page'] += 1
+        for i in tqdm(range(1, data.get('pages')), desc='Получение id вакансий'):
+            req_params['page'] = i
             data = self.__get_vacancies_by_request(req_params)
             data_book += data.get('items')
 
