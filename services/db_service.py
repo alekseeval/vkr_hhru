@@ -1,3 +1,6 @@
+from tqdm.notebook import tqdm
+
+
 class DbService:
     import services.data_model as model
 
@@ -107,7 +110,7 @@ class DbService:
     # --------------------------------------------------------------------------------------
     def save_vacancies(self, vacancies_list):
 
-        for vacancy in vacancies_list:
+        for vacancy in tqdm(vacancies_list, desc='Сохранение вакансий в БД'):
 
             # Если вакансия уже существует, то ничего не делаем
             query = self.model.Vacancy.select().where(self.model.Vacancy.id == vacancy.get('id'))
