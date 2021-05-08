@@ -6,8 +6,7 @@
 import requests
 import json
 
-from services.db_service import DbService
-from tqdm.notebook import tqdm, trange
+from tqdm.notebook import tqdm
 from typing import Final
 
 
