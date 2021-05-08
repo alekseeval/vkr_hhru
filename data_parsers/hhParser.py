@@ -88,21 +88,32 @@ class HhParser:
         return data
 
     # --------------------------------------------------------------------------------------
-    # Метод выгружает в базу данных словари предоставляемые API
+    # Метод выгружает базу словарей API
     # --------------------------------------------------------------------------------------
-    def load_to_db_dictionaries(self):
-
-        # Получение данных справочника dictionaries и занесение их в БД
+    def get_dictionaries(self):
         request = requests.get(f'{self.API_URL}/dictionaries')
         data = json.loads(request.content.decode())
         request.close()
+        return data
+
+    # --------------------------------------------------------------------------------------
+    # Метод выгружает базу существующих специализаций
+    # --------------------------------------------------------------------------------------
+    def get_specializations_dict(self):
+        request = requests.get(f'{self.API_URL}/specializations')
+        data = json.loads(request.content.decode())
+        request.close()
+        return data
+
+    def load_to_db_dictionaries(self):
+
+        # Получение данных справочника dictionaries и занесение их в БД
+        data = self.get_dictionaries()
         self.db_service.add_to_schedule_table(data.get('schedule'))
         self.db_service.add_to_experience_table(data.get('experience'))
         self.db_service.add_to_currency_table(data.get('currency'))
         self.db_service.add_to_employment_table(data.get('employment'))
 
         # Получние данных из справочника specializations и занесение их в БД
-        request = requests.get(f'{self.API_URL}/specializations')
-        data = json.loads(request.content.decode())
-        request.close()
+        data = self.get_specializations_dict()
         self.db_service.add_to_specialization_table(data)
