@@ -104,16 +104,3 @@ class HhParser:
         data = json.loads(request.content.decode())
         request.close()
         return data
-
-    def load_to_db_dictionaries(self):
-
-        # Получение данных справочника dictionaries и занесение их в БД
-        data = self.get_dictionaries()
-        self.db_service.add_to_schedule_table(data.get('schedule'))
-        self.db_service.add_to_experience_table(data.get('experience'))
-        self.db_service.add_to_currency_table(data.get('currency'))
-        self.db_service.add_to_employment_table(data.get('employment'))
-
-        # Получние данных из справочника specializations и занесение их в БД
-        data = self.get_specializations_dict()
-        self.db_service.add_to_specialization_table(data)
