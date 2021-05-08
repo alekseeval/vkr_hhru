@@ -1,6 +1,7 @@
 # TODO: Додумать работу с req_param в методе get_all_vacancies (какие параметры стоит добавлять в словарь и стоит ли)
 #       Может не стоит вообще задавать дефолтное значение
 # TODO: Заменить assert для ошибок в запросах, на соответствующие обработки
+# TODO: Убрать работу с БД из этого класса полностью
 
 import requests
 import json
@@ -30,11 +31,11 @@ class HhParser:
     # @return           --  возвращает данные о вакансиях по указанной странице запроса
     #                       как массив словарей
     # --------------------------------------------------------------------------------------
-    def get_vacancies_by_request(self, req_params):
+    def __get_vacancies_by_request(self, req_params):
         request = requests.get(self.API_VACANCIES_URL, req_params)
         data = json.loads(request.content.decode())
         request.close()
-        assert 'errors' not in data
+        assert 'errors' not in data  # Note: Обработать исключение
         return data
 
     # --------------------------------------------------------------------------------------
@@ -47,40 +48,34 @@ class HhParser:
     # @return       --  инофрмация о вакансиях в виде массива словарей, где каждый словарь
     #                   отвечает за отдельную вакансию
     # --------------------------------------------------------------------------------------
-    def get_vacancies_from_all_pages(self, req_params=None):
+    def get_vacancies(self, req_params=None):
+
         # Проверка наличая параметров запроса
         if req_params is None:
             req_params = {}
+
+        # Если в параметрах запроса нет указания страницы, то выполняем запрос по всем страницам запроса,
+        # иначе только по указанной
         if 'page' not in req_params:
             req_params['page'] = 0
-        if 'per_page' not in req_params:
             req_params['per_page'] = 100
+        else:
+            return self.__get_vacancies_by_request(req_params)
 
         # Заполнение данными о вакансиях с первой страницы запроса
-        data = self.get_vacancies_by_request(req_params)
+        data = self.__get_vacancies_by_request(req_params)
         data_book = data.get('items')
 
         # Получние данных с оставшихся страниц NOTE: WITH PROGRESS BAR
-        bar = Bar(' -->Обработка страниц запроса ', max=data.get('pages'))
-        bar.start()
-        bar.next()
         while data.get('page') < data.get('pages')-1:
             req_params['page'] += 1
-            data = self.get_vacancies_by_request(req_params)
+            data = self.__get_vacancies_by_request(req_params)
             data_book += data.get('items')
-            bar.next()
-        bar.finish()
 
         # Получение полных данных о вакансиях NOTE: WITH PROGRESS BAR
         vacancies_info = []
-        bar = Bar(' -->Получение данных о вакансиях ', max=len(data_book))
         for data in data_book:
-            vacancies_info.append(self.get_vacancy_info_by_id(data.get('id')))
-            bar.next()
-        bar.finish()
-
-        # Запись полученных данных в бд для дальнейшей работы
-        self.db_service.save_vacancies(vacancies_info)
+            vacancies_info.append(self.get_vacancy_by_id(data.get('id')))
 
         return vacancies_info
 
@@ -88,11 +83,11 @@ class HhParser:
     # vacancy_id    --  id вакансии на сайте
     # @return       --  возвращает полные данные о вакансии как dict
     # --------------------------------------------------------------------------------------
-    def get_vacancy_info_by_id(self, vacancy_id):
+    def get_vacancy_by_id(self, vacancy_id):
         request = requests.get(self.API_VACANCIES_URL + f'/{vacancy_id}')
         data = json.loads(request.content.decode())
         request.close()
-        assert 'errors' not in data
+        assert 'errors' not in data  # Note: Обработать исключение
         return data
 
     # --------------------------------------------------------------------------------------
