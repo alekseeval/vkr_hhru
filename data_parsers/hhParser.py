@@ -102,7 +102,7 @@ class HhParser:
     # @return       -- dict объкт с данными по запросу
     # --------------------------------------------------------------------------------------
     def execute_request(self, req_param, sub_href='vacancies'):
-        request = requests.get(f'{self.API_URL}/{sub_href}', req_param)
+        request = requests.get(f'{self.API_URL}/{sub_href}', req_param, timeout=10)
         data = json.loads(request.content.decode())
         request.close()
         return data
