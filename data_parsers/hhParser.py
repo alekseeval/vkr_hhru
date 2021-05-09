@@ -30,25 +30,23 @@ class HhParser:
     # --------------------------------------------------------------------------------------
     # Возвращает данные о всех вакансиях по запросу, с учетом пагинации (с учетом
     # стандартного ограничения API на глубину запроса не более чем в 2000 записей)
-    # Если в параметрах запроса указана страница page, то пагинация не учитывается
     #
     # req_params    --  dict, который должен содержать параметры запроса к API,
     #                   дефолтное значение - req_params = {'page': 0, 'perPage': 100}
+    # single_page   --  флаг, если True, то выводится результат только переданной стрницы запроса
     # @return       --  инофрмация о вакансиях в виде массива словарей
     # --------------------------------------------------------------------------------------
-    def get_vacancies(self, req_params=None):
+    def get_vacancies(self, req_params=None, single_page=False):
 
         # Проверка наличая параметров запроса
         if req_params is None:
-            req_params = {}
+            req_params = {
+                'page': 0,
+                'per_page': 100
+            }
 
-        # Если в параметрах запроса нет указания страницы, то выполняем запрос по всем страницам запроса,
-        # иначе только по указанной
-        if 'page' not in req_params:
-            req_params['page'] = 0
-            req_params['per_page'] = 100
-        else:
-            return self.__get_vacancies_by_request(req_params)
+        if single_page:
+            return self.__get_vacancies_by_request(req_params)['items']
 
         # Заполнение данными о вакансиях с первой страницы запроса
         data = self.__get_vacancies_by_request(req_params)
@@ -72,7 +70,7 @@ class HhParser:
     # @return       --  возвращает полные данные о вакансии как dict
     # --------------------------------------------------------------------------------------
     def get_vacancy_by_id(self, vacancy_id):
-        request = requests.get(self.API_VACANCIES_URL + f'/{vacancy_id}')
+        request = requests.get(self.API_VACANCIES_URL + f'/{vacancy_id}', timeout=10)
         data = json.loads(request.content.decode())
         request.close()
         assert 'errors' not in data  # Note: Обработать исключение
