@@ -213,7 +213,7 @@ class DbService:
                     self.model.SpecializationVacancy.get_or_create(vacancy_id=vacancy.get('id'),
                                                                    specialization_id=spec.get('id'))
 
-        print(f'----> Into table vacancies_id was inserted {len(vacancies_list)} vacancies')
+        print(f'----> Into table vacancies was inserted {len(vacancies_list)} vacancies')
 
     # --------------------------------------------------------------------------------------
     # file      --  файл в котором записан скрипт
