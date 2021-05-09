@@ -6,7 +6,6 @@ class DbService:
 
     def __init__(self):
         self.db_handle = self.model.db_handle
-        self.connection = self.db_handle.connection()
 
     # --------------------------------------------------------------------------------------
     # Сохраняет данные в таблицу schedule
@@ -14,7 +13,7 @@ class DbService:
     # schedules     --  список словарей {'id':some_str, 'name':some_str}
     # --------------------------------------------------------------------------------------
     def add_to_schedule_table(self, schedules):
-        with self.connection.cursor() as cursor:
+        with self.db_handle.cursor() as cursor:
             for schedule in schedules:
                 cursor.execute('''
                     INSERT INTO schedule
@@ -22,7 +21,7 @@ class DbService:
                     ON CONFLICT (id)
                     DO UPDATE SET name = %(name)s
                 ''', schedule)
-        self.connection.commit()
+        self.db_handle.commit()
         print(f'----> Into table schedule was inserted {len(schedules)} values')
 
     # --------------------------------------------------------------------------------------
@@ -31,7 +30,7 @@ class DbService:
     # experience_list     --  список словарей {'id':some_str, 'name':some_str}
     # --------------------------------------------------------------------------------------
     def add_to_experience_table(self, experience_list):
-        with self.connection.cursor() as cursor:
+        with self.db_handle.cursor() as cursor:
             for experience in experience_list:
                 cursor.execute('''
                     INSERT INTO experience
@@ -39,7 +38,7 @@ class DbService:
                     ON CONFLICT (id)
                     DO UPDATE SET name = %(name)s
                 ''', experience)
-        self.connection.commit()
+        self.db_handle.commit()
         print(f'----> Into table experience was inserted {len(experience_list)} values')
 
     # --------------------------------------------------------------------------------------
@@ -48,7 +47,7 @@ class DbService:
     # currencies        --  список словарей с данными в формате который предоставляет API
     # --------------------------------------------------------------------------------------
     def add_to_currency_table(self, currencies):
-        with self.connection.cursor() as cursor:
+        with self.db_handle.cursor() as cursor:
             for currency in currencies:
                 cursor.execute('''
                     INSERT INTO currency
@@ -56,7 +55,7 @@ class DbService:
                     ON CONFLICT (code)
                     DO UPDATE SET (abbr, name, rate, is_default) = (%(abbr)s, %(name)s, %(rate)s, %(default)s)
                 ''', currency)
-        self.connection.commit()
+        self.db_handle.commit()
         print(f'----> Into table currency was inserted {len(currencies)} values')
 
     # --------------------------------------------------------------------------------------
@@ -65,7 +64,7 @@ class DbService:
     # employments       --  список словарей с данными в формате который предоставляет API
     # --------------------------------------------------------------------------------------
     def add_to_employment_table(self, employments):
-        with self.connection.cursor() as cursor:
+        with self.db_handle.cursor() as cursor:
             for employment in employments:
                 cursor.execute('''
                     INSERT INTO employment
@@ -73,7 +72,7 @@ class DbService:
                     ON CONFLICT (id)
                     DO UPDATE SET name = %(name)s
                 ''', employment)
-        self.connection.commit()
+        self.db_handle.commit()
         print(f'----> Into table employment was inserted {len(employments)} values')
 
     # TODO: Удалить переменную для бедага debug_number_of_rows (в будущем)
@@ -83,7 +82,7 @@ class DbService:
     # specializations       --  список словарей с данными в формате который предоставляет API
     # --------------------------------------------------------------------------------------
     def add_to_specialization_table(self, specializations):
-        cursor = self.connection.cursor()
+        cursor = self.db_handle.cursor()
 
         debug_number_of_rows = 0
         for super_specialization in specializations:
@@ -102,7 +101,7 @@ class DbService:
                 ''', specialization)
 
         cursor.close()
-        self.connection.commit()
+        self.db_handle.commit()
         print(f'----> Into table specialization was inserted {debug_number_of_rows} values')
 
     # --------------------------------------------------------------------------------------
@@ -220,7 +219,7 @@ class DbService:
     # file      --  файл в котором записан скрипт
     # --------------------------------------------------------------------------------------
     def execute_script(self, file):
-        with self.connection.cursor() as cursor:
+        with self.db_handle.cursor() as cursor:
             cursor.execute(file.read())
-        self.connection.commit()
+        self.db_handle.commit()
         print(f'----> Script was successfully executed')
