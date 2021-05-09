@@ -70,7 +70,7 @@ class HhParser:
     # @return       --  возвращает полные данные о вакансии как dict
     # --------------------------------------------------------------------------------------
     def get_vacancy_by_id(self, vacancy_id):
-        request = requests.get(self.API_VACANCIES_URL + f'/{vacancy_id}', timeout=10)
+        request = requests.get(self.API_VACANCIES_URL + f'/{vacancy_id}', timeout=50)
         data = json.loads(request.content.decode())
         request.close()
         assert 'errors' not in data  # Note: Обработать исключение
@@ -102,7 +102,7 @@ class HhParser:
     # @return       -- dict объкт с данными по запросу
     # --------------------------------------------------------------------------------------
     def execute_request(self, req_param, sub_href='vacancies'):
-        request = requests.get(f'{self.API_URL}/{sub_href}', req_param, timeout=10)
+        request = requests.get(f'{self.API_URL}/{sub_href}', req_param, timeout=50)
         data = json.loads(request.content.decode())
         request.close()
         return data
