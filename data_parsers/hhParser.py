@@ -8,6 +8,7 @@ import json
 
 from tqdm.notebook import tqdm
 from typing import Final
+from time import sleep
 
 
 class HhParser:
@@ -61,7 +62,11 @@ class HhParser:
         # Получение полных данных о вакансиях NOTE: WITH PROGRESS BAR
         vacancies_info = []
         for data in tqdm(data_book, desc='Выгрузка вакансий'):
-            vacancies_info.append(self.get_vacancy_by_id(data.get('id')))
+            try:
+                vacancies_info.append(self.get_vacancy_by_id(data.get('id')))
+            except:
+                sleep(1)
+                vacancies_info.append(self.get_vacancy_by_id(data.get('id')))
 
         return vacancies_info
 
