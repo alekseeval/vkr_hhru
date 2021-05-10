@@ -16,6 +16,11 @@ class HhParser:
     API_URL: Final = 'https://api.hh.ru'
     API_VACANCIES_URL: Final = API_URL + '/vacancies'
 
+    # Данные из личного кабинета разработчика
+    API_CLIENT_ID: Final = 'N2AFEUCFSBS581GFMQBM7QAG90C05O1H54KP8KCACNOOU8V21SS6O8DPAA6KVDCL'
+    API_CLIENT_SECRET: Final = 'I9VAE4I4POC61MFU31J9S55FBBGC345VAFSBN611RDVUA8BN1J3JH9U3D2M0V8PN'
+    api_token = None
+
     # --------------------------------------------------------------------------------------
     # req_params        --  dict, который должен содержать параметры запроса к API
     # @return           --  возвращает данные о вакансиях по указанной странице запроса
@@ -27,6 +32,31 @@ class HhParser:
         request.close()
         assert 'errors' not in data  # Note: Обработать исключение
         return data
+
+    def get_api_token(self):
+
+        with open('data/api_token', 'r') as file:
+            file_data = json.load(file)
+            self.api_token = file_data['access_token']
+
+        # TODO: Дописать проверку работоспособности полученного ключа и возвращать его если все окей, или получать новый
+        return self.api_token
+
+        req_params = {
+            'grant_type': 'client_credentials',
+            'client_id': self.API_CLIENT_ID,
+            'client_secret': self.API_CLIENT_SECRET
+        }
+        request = requests.post('https://hh.ru/oauth/token', req_params)
+        data = json.loads(request.content.decode())
+        request.close()
+
+        assert 'errors' not in data
+
+        self.api_token = data['access_token']
+        with open('data/api_token', 'w') as file:
+            json.dump(data, file)
+        return self.api_token
 
     # --------------------------------------------------------------------------------------
     # Возвращает данные о всех вакансиях по запросу, с учетом пагинации (с учетом
