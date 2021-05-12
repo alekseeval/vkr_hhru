@@ -71,7 +71,7 @@ class HhParser:
     # --------------------------------------------------------------------------------------
     @staticmethod
     def __test_access_key(access_token):
-        request = requests.get('https://api.hh.ru/me', headers={'Authorization': access_token})
+        request = requests.get('https://api.hh.ru/me', headers={'Authorization': f'Bearer {access_token}'})
         return request.status_code == 200
 
     # --------------------------------------------------------------------------------------
