@@ -2,6 +2,7 @@
 #       Может не стоит вообще задавать дефолтное значение
 # TODO: Заменить assert для ошибок в запросах, на соответствующие обработки
 # TODO: Убрать работу с БД из этого класса полностью
+# TODO: переделать работу с json (request.json())
 
 import requests
 import json
@@ -15,11 +16,7 @@ class HhParser:
 
     API_URL: Final = 'https://api.hh.ru'
     API_VACANCIES_URL: Final = API_URL + '/vacancies'
-
-    # Данные из личного кабинета разработчика
-    API_CLIENT_ID: Final = 'N2AFEUCFSBS581GFMQBM7QAG90C05O1H54KP8KCACNOOU8V21SS6O8DPAA6KVDCL'
-    API_CLIENT_SECRET: Final = 'I9VAE4I4POC61MFU31J9S55FBBGC345VAFSBN611RDVUA8BN1J3JH9U3D2M0V8PN'
-    api_token = None
+    api_access_token = None
 
     # --------------------------------------------------------------------------------------
     # req_params        --  dict, который должен содержать параметры запроса к API
@@ -33,30 +30,49 @@ class HhParser:
         assert 'errors' not in data  # Note: Обработать исключение
         return data
 
+    # --------------------------------------------------------------------------------------
+    # Возвращает API access_token, при необходимости генерируя его по новой
+    # --------------------------------------------------------------------------------------
     def get_api_token(self):
 
-        with open('data/api_token', 'r') as file:
+        if self.api_access_token is not None:
+            return self.api_access_token
+
+        with open('com.alekseev.workflow/oauth_data/api_token', 'r') as file:
             file_data = json.load(file)
-            self.api_token = file_data['access_token']
+            self.api_access_token = file_data['access_token']
 
-        # TODO: Дописать проверку работоспособности полученного ключа и возвращать его если все окей, или получать новый
-        return self.api_token
+        # Если токен еще валиден
+        if self.__test_access_key(self.api_access_token):
+            return self.api_access_token
 
+        with open('com.alekseev.workflow/oauth_data/api_credentials', 'r') as file:
+            file_data = json.load(file)
+            client_id = file_data['client_id']
+            client_secret = file_data['client_secret']
         req_params = {
             'grant_type': 'client_credentials',
-            'client_id': self.API_CLIENT_ID,
-            'client_secret': self.API_CLIENT_SECRET
+            'client_id': client_id,
+            'client_secret': client_secret
         }
         request = requests.post('https://hh.ru/oauth/token', req_params)
-        data = json.loads(request.content.decode())
+        data = request.json()
         request.close()
 
-        assert 'errors' not in data
+        assert 'error' not in data
 
-        self.api_token = data['access_token']
-        with open('data/api_token', 'w') as file:
+        self.api_access_token = data['access_token']
+        with open('com.alekseev.workflow/oauth_data/api_token', 'w') as file:
             json.dump(data, file)
-        return self.api_token
+        return self.api_access_token
+
+    # --------------------------------------------------------------------------------------
+    # @return       --  True, если токен валиден, иначе False
+    # --------------------------------------------------------------------------------------
+    @staticmethod
+    def __test_access_key(access_token):
+        request = requests.get('https://api.hh.ru/me', headers={'Authorization': access_token})
+        return request.status_code == 200
 
     # --------------------------------------------------------------------------------------
     # Возвращает данные о всех вакансиях по запросу, с учетом пагинации (с учетом
