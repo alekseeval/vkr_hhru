@@ -1,9 +1,3 @@
-# TODO: Додумать работу с req_param в методе get_all_vacancies (какие параметры стоит добавлять в словарь и стоит ли)
-#       Может не стоит вообще задавать дефолтное значение
-# TODO: Заменить assert для ошибок в запросах, на соответствующие обработки
-# TODO: Убрать работу с БД из этого класса полностью
-# TODO: переделать работу с json (request.json())
-
 import requests
 import json
 
@@ -13,7 +7,6 @@ from time import sleep
 
 
 class HhParser:
-
     API_URL: Final = 'https://api.hh.ru'
     API_VACANCIES_URL: Final = API_URL + '/vacancies'
     api_access_token = None
