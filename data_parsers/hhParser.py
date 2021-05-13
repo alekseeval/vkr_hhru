@@ -20,7 +20,7 @@ class HhParser:
         request = requests.get(self.API_VACANCIES_URL, req_params)
         data = json.loads(request.content.decode())
         request.close()
-        assert 'errors' not in data  # Note: Обработать исключение
+        assert 'errors' not in data
         return data
 
     # --------------------------------------------------------------------------------------
@@ -92,13 +92,13 @@ class HhParser:
         data = self.__get_vacancies_by_request(req_params)
         data_book = data.get('items')
 
-        # Получние данных с оставшихся страниц NOTE: WITH PROGRESS BAR
+        # Получние данных с оставшихся страниц                                              NOTE: WITH PROGRESS BAR
         for i in tqdm(range(1, data.get('pages')), desc='Получение id вакансий'):
             req_params['page'] = i
             data = self.__get_vacancies_by_request(req_params)
             data_book += data.get('items')
 
-        # Получение полных данных о вакансиях NOTE: WITH PROGRESS BAR
+        # Получение полных данных о вакансиях                                               NOTE: WITH PROGRESS BAR
         vacancies_info = []
         for data in tqdm(data_book, desc='Выгрузка вакансий'):
             try:
@@ -117,12 +117,27 @@ class HhParser:
         request = requests.get(self.API_VACANCIES_URL + f'/{vacancy_id}', timeout=50)
         data = json.loads(request.content.decode())
         request.close()
-        assert 'errors' not in data  # Note: Обработать исключение
+        assert 'errors' not in data
         return data
 
+    # --------------------------------------------------------------------------------------
+    # emp_id        --  id нанимателя на сайте
+    # @return       --  возвращает полные данные о нанимателе
+    # --------------------------------------------------------------------------------------
     def get_employer_info(self, emp_id):
         request = requests.get(f'{self.API_URL}/employers/{emp_id}')
         data = request.json()
+        request.close()
+        return data
+
+    # --------------------------------------------------------------------------------------
+    # emp_id_list   --  список id нанимателей, заврнутых в tuple
+    # @return       --  возвращает полные данные о переданных нанимателях
+    # --------------------------------------------------------------------------------------
+    def get_employers_info(self, emp_id_list):
+        data = []
+        for emp_id_tuple in tqdm(emp_id_list, desc='Выгрузка нанимателей'):                 # NOTE: WITH PROGRESS BAR
+            data.append(self.get_employer_info(emp_id_tuple[0]))
         return data
 
     # --------------------------------------------------------------------------------------
