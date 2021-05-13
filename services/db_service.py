@@ -223,3 +223,10 @@ class DbService:
             cursor.execute(file.read())
         self.db_handle.commit()
         print(f'----> Script was successfully executed')
+
+    def execute_script(self, script_str):
+        cursor = self.db_handle.execute_sql(script_str)
+        data = []
+        for row in cursor:
+            data.append(row)
+        return data
