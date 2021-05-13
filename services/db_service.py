@@ -218,7 +218,7 @@ class DbService:
     # --------------------------------------------------------------------------------------
     # file      --  файл в котором записан скрипт
     # --------------------------------------------------------------------------------------
-    def execute_script(self, file):
+    def execute_file_script(self, file):
         with self.db_handle.cursor() as cursor:
             cursor.execute(file.read())
         self.db_handle.commit()
