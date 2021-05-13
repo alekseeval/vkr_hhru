@@ -120,6 +120,11 @@ class HhParser:
         assert 'errors' not in data  # Note: Обработать исключение
         return data
 
+    def get_employer_info(self, emp_id):
+        request = requests.get(f'{self.API_URL}/employers/{emp_id}')
+        data = request.json()
+        return data
+
     # --------------------------------------------------------------------------------------
     # Метод выгружает базу словарей API
     # --------------------------------------------------------------------------------------
