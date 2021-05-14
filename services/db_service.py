@@ -221,8 +221,6 @@ class DbService:
                     self.model.SpecializationVacancy.get_or_create(vacancy_id=vacancy.get('id'),
                                                                    specialization_id=spec.get('id'))
 
-        print(f'----> Into table vacancies was inserted {len(vacancies_list)} vacancies')
-
     def save_employers(self, employer_data_list):
         for empl_data in employer_data_list:
             self.save_employer(empl_data)
