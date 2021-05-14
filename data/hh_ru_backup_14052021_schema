@@ -5,7 +5,7 @@
 -- Dumped from database version 13.2
 -- Dumped by pg_dump version 13.2
 
--- Started on 2021-05-09 17:52:14
+-- Started on 2021-05-14 22:46:51
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -23,7 +23,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 200 (class 1259 OID 58255)
+-- TOC entry 200 (class 1259 OID 94538)
 -- Name: address; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -40,7 +40,7 @@ CREATE TABLE public.address (
 ALTER TABLE public.address OWNER TO admin;
 
 --
--- TOC entry 201 (class 1259 OID 58261)
+-- TOC entry 201 (class 1259 OID 94544)
 -- Name: address_metro; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -55,7 +55,7 @@ CREATE TABLE public.address_metro (
 ALTER TABLE public.address_metro OWNER TO admin;
 
 --
--- TOC entry 202 (class 1259 OID 58267)
+-- TOC entry 202 (class 1259 OID 94550)
 -- Name: area; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -68,7 +68,7 @@ CREATE TABLE public.area (
 ALTER TABLE public.area OWNER TO admin;
 
 --
--- TOC entry 203 (class 1259 OID 58273)
+-- TOC entry 203 (class 1259 OID 94556)
 -- Name: currency; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -84,7 +84,39 @@ CREATE TABLE public.currency (
 ALTER TABLE public.currency OWNER TO admin;
 
 --
--- TOC entry 204 (class 1259 OID 58279)
+-- TOC entry 213 (class 1259 OID 154473)
+-- Name: employer; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.employer (
+    id character varying(20) NOT NULL,
+    name text,
+    trusted boolean,
+    type character varying(20),
+    description text,
+    site_url text,
+    alternate_url text,
+    area_id character varying(32)
+);
+
+
+ALTER TABLE public.employer OWNER TO admin;
+
+--
+-- TOC entry 212 (class 1259 OID 154468)
+-- Name: employer_type; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.employer_type (
+    id character varying(20) NOT NULL,
+    name character varying(22)
+);
+
+
+ALTER TABLE public.employer_type OWNER TO admin;
+
+--
+-- TOC entry 204 (class 1259 OID 94562)
 -- Name: employment; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -97,7 +129,7 @@ CREATE TABLE public.employment (
 ALTER TABLE public.employment OWNER TO admin;
 
 --
--- TOC entry 205 (class 1259 OID 58282)
+-- TOC entry 205 (class 1259 OID 94565)
 -- Name: experience; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -110,7 +142,7 @@ CREATE TABLE public.experience (
 ALTER TABLE public.experience OWNER TO admin;
 
 --
--- TOC entry 206 (class 1259 OID 58288)
+-- TOC entry 206 (class 1259 OID 94571)
 -- Name: metro_station; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -127,7 +159,7 @@ CREATE TABLE public.metro_station (
 ALTER TABLE public.metro_station OWNER TO admin;
 
 --
--- TOC entry 207 (class 1259 OID 58294)
+-- TOC entry 207 (class 1259 OID 94577)
 -- Name: schedule; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -140,7 +172,7 @@ CREATE TABLE public.schedule (
 ALTER TABLE public.schedule OWNER TO admin;
 
 --
--- TOC entry 208 (class 1259 OID 58297)
+-- TOC entry 208 (class 1259 OID 94580)
 -- Name: specialization; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -155,7 +187,7 @@ CREATE TABLE public.specialization (
 ALTER TABLE public.specialization OWNER TO admin;
 
 --
--- TOC entry 209 (class 1259 OID 58303)
+-- TOC entry 209 (class 1259 OID 94586)
 -- Name: specialization_vacancy; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -168,7 +200,7 @@ CREATE TABLE public.specialization_vacancy (
 ALTER TABLE public.specialization_vacancy OWNER TO admin;
 
 --
--- TOC entry 210 (class 1259 OID 58306)
+-- TOC entry 210 (class 1259 OID 94589)
 -- Name: vacancies; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -204,7 +236,7 @@ CREATE TABLE public.vacancies (
 ALTER TABLE public.vacancies OWNER TO admin;
 
 --
--- TOC entry 211 (class 1259 OID 58315)
+-- TOC entry 211 (class 1259 OID 94595)
 -- Name: vacancy_skill; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -217,7 +249,7 @@ CREATE TABLE public.vacancy_skill (
 ALTER TABLE public.vacancy_skill OWNER TO admin;
 
 --
--- TOC entry 2902 (class 2606 OID 58322)
+-- TOC entry 2911 (class 2606 OID 94602)
 -- Name: area area_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -226,7 +258,7 @@ ALTER TABLE ONLY public.area
 
 
 --
--- TOC entry 2904 (class 2606 OID 58324)
+-- TOC entry 2913 (class 2606 OID 94604)
 -- Name: currency currency_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -235,7 +267,25 @@ ALTER TABLE ONLY public.currency
 
 
 --
--- TOC entry 2906 (class 2606 OID 58326)
+-- TOC entry 2927 (class 2606 OID 154527)
+-- Name: employer employer_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.employer
+    ADD CONSTRAINT employer_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2925 (class 2606 OID 154505)
+-- Name: employer_type employer_type_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.employer_type
+    ADD CONSTRAINT employer_type_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2915 (class 2606 OID 94606)
 -- Name: employment employment_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -244,7 +294,7 @@ ALTER TABLE ONLY public.employment
 
 
 --
--- TOC entry 2908 (class 2606 OID 58328)
+-- TOC entry 2917 (class 2606 OID 94608)
 -- Name: experience experience_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -253,7 +303,7 @@ ALTER TABLE ONLY public.experience
 
 
 --
--- TOC entry 2910 (class 2606 OID 58330)
+-- TOC entry 2919 (class 2606 OID 94610)
 -- Name: schedule schedule_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -262,7 +312,7 @@ ALTER TABLE ONLY public.schedule
 
 
 --
--- TOC entry 2912 (class 2606 OID 58332)
+-- TOC entry 2921 (class 2606 OID 94612)
 -- Name: specialization specialization_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -271,7 +321,7 @@ ALTER TABLE ONLY public.specialization
 
 
 --
--- TOC entry 2914 (class 2606 OID 58336)
+-- TOC entry 2923 (class 2606 OID 94614)
 -- Name: vacancies vacancies_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -280,7 +330,25 @@ ALTER TABLE ONLY public.vacancies
 
 
 --
--- TOC entry 2915 (class 2606 OID 58337)
+-- TOC entry 2936 (class 2606 OID 154486)
+-- Name: employer employer_area_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.employer
+    ADD CONSTRAINT employer_area_id_fkey FOREIGN KEY (area_id) REFERENCES public.area(id);
+
+
+--
+-- TOC entry 2937 (class 2606 OID 154521)
+-- Name: employer employer_type_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.employer
+    ADD CONSTRAINT employer_type_fkey FOREIGN KEY (type) REFERENCES public.employer_type(id);
+
+
+--
+-- TOC entry 2928 (class 2606 OID 94615)
 -- Name: specialization_vacancy specialization_vacancy_specialization_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -289,7 +357,7 @@ ALTER TABLE ONLY public.specialization_vacancy
 
 
 --
--- TOC entry 2916 (class 2606 OID 58342)
+-- TOC entry 2929 (class 2606 OID 94620)
 -- Name: specialization_vacancy specialization_vacancy_vacancy_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -298,7 +366,7 @@ ALTER TABLE ONLY public.specialization_vacancy
 
 
 --
--- TOC entry 2917 (class 2606 OID 58347)
+-- TOC entry 2930 (class 2606 OID 94625)
 -- Name: vacancies vacancies_area_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -307,7 +375,7 @@ ALTER TABLE ONLY public.vacancies
 
 
 --
--- TOC entry 2918 (class 2606 OID 58352)
+-- TOC entry 2931 (class 2606 OID 94630)
 -- Name: vacancies vacancies_employment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -316,7 +384,7 @@ ALTER TABLE ONLY public.vacancies
 
 
 --
--- TOC entry 2919 (class 2606 OID 58357)
+-- TOC entry 2932 (class 2606 OID 94635)
 -- Name: vacancies vacancies_experience_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -325,7 +393,7 @@ ALTER TABLE ONLY public.vacancies
 
 
 --
--- TOC entry 2920 (class 2606 OID 58362)
+-- TOC entry 2933 (class 2606 OID 94640)
 -- Name: vacancies vacancies_salary_currency_code_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -334,7 +402,7 @@ ALTER TABLE ONLY public.vacancies
 
 
 --
--- TOC entry 2921 (class 2606 OID 58367)
+-- TOC entry 2934 (class 2606 OID 94645)
 -- Name: vacancies vacancies_schedule_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -343,7 +411,7 @@ ALTER TABLE ONLY public.vacancies
 
 
 --
--- TOC entry 2922 (class 2606 OID 58372)
+-- TOC entry 2935 (class 2606 OID 94650)
 -- Name: vacancy_skill vacancy_skill_vacancy_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -351,7 +419,7 @@ ALTER TABLE ONLY public.vacancy_skill
     ADD CONSTRAINT vacancy_skill_vacancy_id_fkey FOREIGN KEY (vacancy_id) REFERENCES public.vacancies(id);
 
 
--- Completed on 2021-05-09 17:52:15
+-- Completed on 2021-05-14 22:46:51
 
 --
 -- PostgreSQL database dump complete
