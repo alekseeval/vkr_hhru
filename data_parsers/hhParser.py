@@ -137,7 +137,14 @@ class HhParser:
     def get_employers_info(self, emp_id_list):
         data = []
         for emp_id_tuple in tqdm(emp_id_list, desc='Выгрузка нанимателей'):                 # NOTE: WITH PROGRESS BAR
-            data.append(self.get_employer_info(emp_id_tuple[0]))
+            try:
+                cur_emp = self.get_employer_info(emp_id_tuple[0])
+            except:
+                sleep(1)
+                cur_emp = self.get_employer_info(emp_id_tuple[0])
+            if cur_emp.get('errors') is not None:
+                continue
+            data.append(cur_emp)
         return data
 
     # --------------------------------------------------------------------------------------
