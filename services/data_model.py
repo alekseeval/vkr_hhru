@@ -163,3 +163,37 @@ class VacancySkill(Model):
         primary_key = False
         db_table = 'vacancy_skill'
         database = db_handle
+
+
+class EmployerType(Model):
+    id = CharField(max_length=20, primary_key=True)
+    name = CharField(max_length=22)
+
+    class Meta:
+        db_table = 'employer_type'
+        database = db_handle
+
+
+class Employer(Model):
+    id = CharField(max_length=20, primary_key=True)
+    name = TextField()
+    trusted = BooleanField()
+    type = ForeignKeyField(EmployerType, column_name='type')
+    description = TextField()
+    site_url = TextField()
+    alternate_url = TextField()
+    area_id = ForeignKeyField(Area, column_name='area_id')
+
+    class Meta:
+        db_table = 'employer'
+        database = db_handle
+
+
+# class EmployerIndustry(Model):
+#     employer_id = ForeignKeyField(Employer, column_name='employer_id')
+#     industry_id = ForeignKeyField(Industry, column_name='specialization_id')
+#
+#     class Meta:
+#         primary_key = False
+#         db_table = 'employer_industry'
+#         database = db_handle

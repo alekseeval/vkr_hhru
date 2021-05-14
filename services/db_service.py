@@ -24,6 +24,18 @@ class DbService:
         self.db_handle.commit()
         print(f'----> Into table schedule was inserted {len(schedules)} values')
 
+    def add_to_employer_type_table(self, emp_types_list):
+        with self.db_handle.cursor() as cursor:
+            for emp_type in emp_types_list:
+                cursor.execute('''
+                    INSERT INTO employer_type
+                    VALUES (%(id)s, %(name)s) 
+                    ON CONFLICT (id)
+                    DO UPDATE SET name = %(name)s
+                ''', emp_type)
+        self.db_handle.commit()
+        print(f'----> Into table employer_type was inserted {len(emp_types_list)} values')
+
     # --------------------------------------------------------------------------------------
     # Сохраняет данные в таблицу experience
     #
@@ -75,7 +87,6 @@ class DbService:
         self.db_handle.commit()
         print(f'----> Into table employment was inserted {len(employments)} values')
 
-    # TODO: Удалить переменную для бедага debug_number_of_rows (в будущем)
     # --------------------------------------------------------------------------------------
     # Сохраняет данные в таблицу specialization
     #
@@ -215,6 +226,27 @@ class DbService:
 
         print(f'----> Into table vacancies was inserted {len(vacancies_list)} vacancies')
 
+    def save_employers(self, employer_data_list):
+        for empl_data in tqdm(employer_data_list, desc='Запись в БД'):
+            self.save_employer(empl_data)
+
+    def save_employer(self, employer_data):
+        area = employer_data.get('area')
+        if area is not None:
+            self.model.Area.get_or_create(id=area['id'], name=area['name'])
+        else:
+            area = {}
+        self.model.Employer.get_or_create(
+            id=employer_data.get('id'),
+            name=employer_data.get('name'),
+            trusted=employer_data.get('trusted'),
+            type=employer_data.get('type'),
+            description=employer_data.get('description'),
+            site_url=employer_data.get('site_url'),
+            alternate_url=employer_data.get('alternate_url'),
+            area_id=area.get('id')
+        )
+
     # --------------------------------------------------------------------------------------
     # file      --  файл в котором записан скрипт
     # --------------------------------------------------------------------------------------
@@ -224,6 +256,9 @@ class DbService:
         self.db_handle.commit()
         print(f'----> Script was successfully executed')
 
+    # --------------------------------------------------------------------------------------
+    # script_str    --  строка SQL запроса
+    # --------------------------------------------------------------------------------------
     def execute_script(self, script_str):
         cursor = self.db_handle.execute_sql(script_str)
         data = []
