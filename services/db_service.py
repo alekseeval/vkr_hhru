@@ -1,6 +1,3 @@
-from tqdm.notebook import tqdm
-
-
 class DbService:
     import services.data_model as model
 
@@ -120,7 +117,7 @@ class DbService:
     # --------------------------------------------------------------------------------------
     def save_vacancies(self, vacancies_list):
 
-        for vacancy in tqdm(vacancies_list, desc='Сохранение вакансий в БД'):
+        for vacancy in vacancies_list:
 
             # Если вакансия уже существует, то ничего не делаем
             query = self.model.Vacancy.select().where(self.model.Vacancy.id == vacancy.get('id'))
@@ -227,7 +224,7 @@ class DbService:
         print(f'----> Into table vacancies was inserted {len(vacancies_list)} vacancies')
 
     def save_employers(self, employer_data_list):
-        for empl_data in tqdm(employer_data_list, desc='Запись в БД'):
+        for empl_data in employer_data_list:
             self.save_employer(empl_data)
 
     def save_employer(self, employer_data):

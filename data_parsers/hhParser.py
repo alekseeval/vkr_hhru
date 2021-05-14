@@ -92,15 +92,15 @@ class HhParser:
         data = self.__get_vacancies_by_request(req_params)
         data_book = data.get('items')
 
-        # Получние данных с оставшихся страниц                                              NOTE: WITH PROGRESS BAR
-        for i in tqdm(range(1, data.get('pages')), desc='Получение id вакансий'):
+        # Получние данных с оставшихся страниц
+        for i in range(1, data.get('pages')):
             req_params['page'] = i
             data = self.__get_vacancies_by_request(req_params)
             data_book += data.get('items')
 
-        # Получение полных данных о вакансиях                                               NOTE: WITH PROGRESS BAR
+        # Получение полных данных о вакансиях
         vacancies_info = []
-        for data in tqdm(data_book, desc='Выгрузка вакансий'):
+        for data in data_book:
             try:
                 vacancies_info.append(self.get_vacancy_by_id(data.get('id')))
             except:
