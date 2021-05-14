@@ -12,10 +12,10 @@ cur_date = {
     'to': datetime.now()
 }
 req_param = {
-        'specialization':1,
-        'per_page':0,
-        'date_from':cur_date['from'].strftime('%Y-%m-%dT%H:%M:%S'),
-        'date_to':cur_date['to'].strftime('%Y-%m-%dT%H:%M:%S')
+        'specialization': 1,
+        'per_page': 0,
+        'date_from': cur_date['from'].strftime('%Y-%m-%dT%H:%M:%S'),
+        'date_to': cur_date['to'].strftime('%Y-%m-%dT%H:%M:%S')
     }
 data = parser.execute_request(req_param=req_param)
 dates = []
