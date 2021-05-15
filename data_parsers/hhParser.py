@@ -102,10 +102,13 @@ class HhParser:
         vacancies_info = []
         for data in data_book:
             try:
-                vacancies_info.append(self.get_vacancy_by_id(data.get('id')))
+                vacancy = self.get_vacancy_by_id(data.get('id'))
             except:
                 sleep(1)
-                vacancies_info.append(self.get_vacancy_by_id(data.get('id')))
+                vacancy = self.get_vacancy_by_id(data.get('id'))
+            if 'errors' in vacancy:
+                continue
+            vacancies_info.append(vacancy)
 
         return vacancies_info
 
@@ -117,7 +120,7 @@ class HhParser:
         request = requests.get(self.API_VACANCIES_URL + f'/{vacancy_id}', timeout=50)
         data = json.loads(request.content.decode())
         request.close()
-        assert 'errors' not in data
+        # assert 'errors' not in data
         return data
 
     # --------------------------------------------------------------------------------------
