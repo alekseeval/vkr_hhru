@@ -92,20 +92,23 @@ class HhParser:
         data = self.__get_vacancies_by_request(req_params)
         data_book = data.get('items')
 
-        # Получние данных с оставшихся страниц                                              NOTE: WITH PROGRESS BAR
-        for i in tqdm(range(1, data.get('pages')), desc='Получение id вакансий'):
+        # Получние данных с оставшихся страниц
+        for i in range(1, data.get('pages')):
             req_params['page'] = i
             data = self.__get_vacancies_by_request(req_params)
             data_book += data.get('items')
 
-        # Получение полных данных о вакансиях                                               NOTE: WITH PROGRESS BAR
+        # Получение полных данных о вакансиях
         vacancies_info = []
-        for data in tqdm(data_book, desc='Выгрузка вакансий'):
+        for data in data_book:
             try:
-                vacancies_info.append(self.get_vacancy_by_id(data.get('id')))
+                vacancy = self.get_vacancy_by_id(data.get('id'))
             except:
                 sleep(1)
-                vacancies_info.append(self.get_vacancy_by_id(data.get('id')))
+                vacancy = self.get_vacancy_by_id(data.get('id'))
+            if 'errors' in vacancy:
+                continue
+            vacancies_info.append(vacancy)
 
         return vacancies_info
 
@@ -117,7 +120,7 @@ class HhParser:
         request = requests.get(self.API_VACANCIES_URL + f'/{vacancy_id}', timeout=50)
         data = json.loads(request.content.decode())
         request.close()
-        assert 'errors' not in data
+        # assert 'errors' not in data
         return data
 
     # --------------------------------------------------------------------------------------
