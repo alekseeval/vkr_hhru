@@ -222,8 +222,8 @@ class DbService:
                                                                    specialization_id=spec.get('id'))
 
     def save_employers(self, employer_data_list):
-        for empl_data in employer_data_list:
-            self.save_employer(empl_data)
+        for employer_data in employer_data_list:
+            self.save_employer(employer_data)
 
     def save_employer(self, employer_data):
         area = employer_data.get('area')

@@ -12,7 +12,7 @@ db_service.add_to_currency_table(data.get('currency'))
 db_service.add_to_employment_table(data.get('employment'))
 db_service.add_to_employer_type_table(data.get('employer_type'))
 
-# Получние данных из справочника specializations и занесение их в БД
+# Получение данных из справочника specializations и занесение их в БД
 data = parser.get_specializations_dict()
 db_service.add_to_specialization_table(data)
 

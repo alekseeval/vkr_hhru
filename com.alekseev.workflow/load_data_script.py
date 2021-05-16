@@ -43,7 +43,7 @@ def load_vacancies(d_range):
         'per_page': 100,
         'date_from': d_range[0],
         'date_to': d_range[1],
-        'specialization':1
+        'specialization': 1
     }
     vac = parser.get_vacancies(req_params=params)
     db_service.save_vacancies(vac)
@@ -73,9 +73,9 @@ for i in tqdm(range(0, len(dates), THREADS_NUMBER)):
 employers = db_service.execute_script('SELECT DISTINCT employer_id FROM vacancies WHERE employer_id is not NULL')
 
 
-def load_employers(empl):
-    data = parser.get_employers_info(empl)
-    db_service.save_employers(data)
+def load_employers(employer):
+    employer_info = parser.get_employers_info(employer)
+    db_service.save_employers(employer_info)
 
 
 threads = []

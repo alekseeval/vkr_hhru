@@ -73,12 +73,12 @@ class HhParser:
     #
     # req_params    --  dict, который должен содержать параметры запроса к API,
     #                   дефолтное значение - req_params = {'page': 0, 'perPage': 100}
-    # single_page   --  флаг, если True, то выводится результат только переданной стрницы запроса
-    # @return       --  инофрмация о вакансиях в виде массива словарей
+    # single_page   --  флаг, если True, то выводится результат только переданной страницы запроса
+    # @return       --  информация о вакансиях в виде массива словарей
     # --------------------------------------------------------------------------------------
     def get_vacancies(self, req_params=None, single_page=False):
 
-        # Проверка наличая параметров запроса
+        # Проверка наличия параметров запроса
         if req_params is None:
             req_params = {
                 'page': 0,
@@ -92,7 +92,7 @@ class HhParser:
         data = self.__get_vacancies_by_request(req_params)
         data_book = data.get('items')
 
-        # Получние данных с оставшихся страниц
+        # Получение данных с оставшихся страниц
         for i in range(1, data.get('pages')):
             req_params['page'] = i
             data = self.__get_vacancies_by_request(req_params)
@@ -134,7 +134,7 @@ class HhParser:
         return data
 
     # --------------------------------------------------------------------------------------
-    # emp_id_list   --  список id нанимателей, заврнутых в tuple
+    # emp_id_list   --  список id нанимателей, завернутых в tuple
     # @return       --  возвращает полные данные о переданных нанимателях
     # --------------------------------------------------------------------------------------
     def get_employers_info(self, emp_id_list):
@@ -173,7 +173,7 @@ class HhParser:
     #
     # req_param     -- словарь параметров запроса к API
     # sub_href      -- раздел API, к которому осуществляется доступ (пример: .../vacancies)
-    # @return       -- dict объкт с данными по запросу
+    # @return       -- dict объект с данными по запросу
     # --------------------------------------------------------------------------------------
     def execute_request(self, req_param, sub_href='vacancies'):
         request = requests.get(f'{self.API_URL}/{sub_href}', req_param, timeout=50)
