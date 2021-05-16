@@ -6,7 +6,7 @@ from typing import Final
 from time import sleep
 
 
-class HhParser:
+class HhVacancyParser:
     API_URL: Final = 'https://api.hh.ru'
     API_VACANCIES_URL: Final = API_URL + '/vacancies'
     api_access_token = None
