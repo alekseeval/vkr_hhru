@@ -15,30 +15,36 @@ class HhResumeParser:
         # options.add_argument('--headless')
         self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
         self.driver.maximize_window()
+        self.driver.set_page_load_timeout(10)
 
-    def go_to_page(self, page_number):
-        self.driver.get(f'https://irkutsk.hh.ru/search/resume?'
-                        f'clusters=true&'
-                        f'exp_period=all_time&'
-                        f'logic=normal&'
-                        f'no_magic=true&'
-                        f'order_by=relevance&'
-                        f'ored_clusters=true&'
-                        f'pos=full_text&text=&'
-                        f'items_on_page=100&'
-                        f'st=resumeSearch&'
-                        f'relocation=living_or_relocation&'
-                        f'specialization=1&'
-                        f'gender=unknown&'
-                        f'page={page_number}')
+    def go_to_page(self, href):
+        try:
+            self.driver.get(href)
+        except:
+            self.driver.get(href)
 
     def get_resumes(self):
 
         # Обход всех страниц запроса
         resume_hrefs = []
-        for i in tqdm(range(1), desc='Обход страниц'):                                     # NOTE: WITH PROGRESS BAR
-            self.go_to_page(i)
-            self.driver.execute_script('window.scrollBy(0, 80000);')
+        for i in tqdm(range(50), desc='Обход страниц'):                                     # NOTE: WITH PROGRESS BAR
+            self.go_to_page(
+                f'https://irkutsk.hh.ru/search/resume?'
+                f'clusters=true&'
+                f'exp_period=all_time&'
+                f'logic=normal&'
+                f'no_magic=true&'
+                f'order_by=relevance&'
+                f'ored_clusters=true&'
+                f'pos=full_text&text=&'
+                f'items_on_page=100&'
+                f'st=resumeSearch&'
+                f'relocation=living_or_relocation&'
+                f'specialization=1&'
+                f'gender=unknown&'
+                f'page={i}'
+            )
+            # self.driver.execute_script('window.scrollBy(0, 80000);')
             page_hrefs = self.driver.find_elements_by_css_selector('.resume-search-item__name')
             for href in page_hrefs:
                 resume_hrefs.append(href.get_attribute('href'))
@@ -46,7 +52,8 @@ class HhResumeParser:
         # Обход всех полученных ссылок на резюме
         resumes_data = []
         for resume_href in tqdm(resume_hrefs, desc='Обход вакансий'):                       # NOTE: WITH PROGRESS BAR
-            self.driver.get(resume_href)
+            # self.driver.get(resume_href)
+            self.go_to_page(resume_href)
             # Обработка недоступного резюме
             if len(self.driver.find_elements_by_css_selector('.attention_bad')) != 0:
                 continue
@@ -122,8 +129,8 @@ class HhResumeParser:
             for name, org in zip(names, organizations):
                 resume['additional_education'].append(
                     {
-                        'name': name,
-                        'organization': org
+                        'name': name.text,
+                        'organization': org.text
                     }
                 )
 
