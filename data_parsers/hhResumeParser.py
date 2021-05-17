@@ -12,9 +12,9 @@ class HhResumeParser:
 
     def __init__(self):
         options = webdriver.ChromeOptions()
-        options.add_argument('--headless')
+        # options.add_argument('--headless')
         self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
-        # self.driver.maximize_window()
+        self.driver.maximize_window()
 
     def go_to_page(self, page_number):
         self.driver.get(f'https://irkutsk.hh.ru/search/resume?'
@@ -36,7 +36,7 @@ class HhResumeParser:
 
         # Обход всех страниц запроса
         resume_hrefs = []
-        for i in tqdm(range(10), desc='Обход страниц'):                                     # NOTE: WITH PROGRESS BAR
+        for i in tqdm(range(1), desc='Обход страниц'):                                     # NOTE: WITH PROGRESS BAR
             self.go_to_page(i)
             self.driver.execute_script('window.scrollBy(0, 80000);')
             page_hrefs = self.driver.find_elements_by_css_selector('.resume-search-item__name')
@@ -47,14 +47,24 @@ class HhResumeParser:
         resumes_data = []
         for resume_href in tqdm(resume_hrefs, desc='Обход вакансий'):                       # NOTE: WITH PROGRESS BAR
             self.driver.get(resume_href)
+            # Обработка недоступного резюме
+            if len(self.driver.find_elements_by_css_selector('.attention_bad')) != 0:
+                continue
             resumes_data.append(self.parse_resume_info())
 
         self.driver.close()
         return resumes_data
 
     def parse_resume_info(self):
+
         # Создание объекта данных резюме
         resume = {}
+
+        # Получение названия резюме
+        resume['title'] = self.driver.find_element_by_css_selector('.resume-block__title-text').text
+
+        # Определение наличия фото
+        resume['have_photo'] = len(self.driver.find_elements_by_css_selector('.resume-photo')) != 0
 
         # Получение данных о запрашиваемой ЗП
         salary_element = self.driver.find_elements_by_css_selector('.resume-block__title-text_salary')
@@ -62,10 +72,66 @@ class HhResumeParser:
             salary_split = salary_element[0].text.split(' ')
             salary = {
                 'value':        int(salary_split[0].replace('\u2009', '')),
-                'currency':     salary_split[1].replace('.', '')
+                'currency':     salary_split[1]
             }
             resume['salary'] = salary
         else:
             resume['salary'] = None
+
+        # Получение данных о адресе соискателя
+        address = self.driver.find_elements_by_css_selector("span[data-qa='resume-personal-address']")
+        if len(address) != 0:
+            resume['address'] = address[0].text
+        else:
+            resume['address'] = None
+
+        # Получение данных поля "Обо мне"
+        about_field_element = self.driver.find_elements_by_css_selector("div[data-qa='resume-block-skills-content']")
+        if len(about_field_element) != 0:
+            resume['about'] = about_field_element[0].text
+        else:
+            resume['about'] = None
+
+        # Получение специализаций резюме
+        resume['specializations'] = []
+        specs_el = self.driver.find_elements_by_css_selector(".resume-block__specialization")
+        for spec in specs_el:
+            resume['specializations'].append(spec.text)
+
+        # Получение кол-ва высших образований
+        higher_education_block = self.driver.find_elements_by_css_selector("div[data-qa='resume-block-education']")
+        if len(higher_education_block) != 0:
+            resume['higher_educations_number'] = len(
+                higher_education_block[0].find_elements_by_css_selector("div[data-qa='resume-block-education-item']")
+            )
+        else:
+            resume['higher_educations_number'] = 0
+
+        # Получение списка повышений квалификаций/курсов
+        resume['additional_education'] = []
+        additional_education_block = self.driver.find_elements_by_css_selector(
+            "div[data-qa='resume-block-additional-education']"
+        )
+        if len(additional_education_block) != 0:
+            names = additional_education_block[0].find_elements_by_css_selector(
+                "div[data-qa='resume-block-education-name']"
+            )
+            organizations = additional_education_block[0].find_elements_by_css_selector(
+                "div[data-qa='resume-block-education-organization']"
+            )
+            for name, org in zip(names, organizations):
+                resume['additional_education'].append(
+                    {
+                        'name': name,
+                        'organization': org
+                    }
+                )
+
+        # Получение списка ключевых навыков соискателя
+        resume['key_skills'] = []
+        key_skill_elements = self.driver.find_elements_by_css_selector('.bloko-tag__section_text')
+        if len(key_skill_elements) != 0:
+            for el in key_skill_elements:
+                resume['key_skills'].append(el.text)
 
         return resume
