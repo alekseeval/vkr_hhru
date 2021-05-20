@@ -15,7 +15,7 @@ class HhResumeParser:
         # options.add_argument('--headless')
         self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
         self.driver.maximize_window()
-        self.driver.set_page_load_timeout(10)
+        self.driver.set_page_load_timeout(20)
 
     def go_to_page(self, href):
         try:
@@ -27,7 +27,7 @@ class HhResumeParser:
 
         # Обход всех страниц запроса
         resume_hrefs = []
-        for i in tqdm(range(50), desc='Обход страниц'):                                     # NOTE: WITH PROGRESS BAR
+        for i in tqdm(range(1), desc='Обход страниц'):                                     # NOTE: WITH PROGRESS BAR
             self.go_to_page(
                 f'https://irkutsk.hh.ru/search/resume?'
                 f'clusters=true&'
@@ -65,7 +65,13 @@ class HhResumeParser:
     def parse_resume_info(self):
 
         # Создание объекта данных резюме
-        resume = {}
+        resume = {
+            'href': self.driver.current_url
+        }
+
+        # Раскрытие всех дополнительных элементов страницы
+        for el in self.driver.find_elements_by_css_selector('.resume-industries__open'):
+            el.click()
 
         # Получение названия резюме
         resume['title'] = self.driver.find_element_by_css_selector('.resume-block__title-text').text
@@ -133,6 +139,32 @@ class HhResumeParser:
                         'organization': org.text
                     }
                 )
+
+        # Получение опыта работы соискателя
+        exp_time = self.driver.find_elements_by_css_selector('.bloko-text-tertiary')[:-1]
+        exp_industries = self.driver.find_elements_by_css_selector('.resume-block__experience-industries')
+        resume_experience = []
+        for time, industries_block in zip(exp_time, exp_industries):
+            industries = []
+            industries_list = industries_block.find_elements_by_css_selector('.profareatree__subitem-experience')
+            for el in industries_list:
+                industries.append(el.text)
+            resume_experience.append({'time': time.text, 'industries': industries})
+        resume['experience'] = resume_experience
+
+        # Получение желаемого графика работы
+        schedule_parent_block = self.driver.find_elements_by_css_selector("div[data-qa='resume-block-position']")
+        if len(schedule_parent_block) != 0:
+            paragraphs = schedule_parent_block[0].find_elements_by_css_selector('p')
+
+            employment_text = paragraphs[0].text.replace('Employment: ', '').replace('Занятость: ', '')
+            schedule_text = paragraphs[1].text.replace('Work schedule: ', '').replace('График работы: ', '')
+
+            resume['schedule'] = schedule_text.split(', ')
+            resume['employment'] = employment_text.split(', ')
+        else:
+            resume['schedule'] = []
+            resume['employment'] = []
 
         # Получение списка ключевых навыков соискателя
         resume['key_skills'] = []
