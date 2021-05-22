@@ -1,9 +1,14 @@
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
-from tqdm.notebook import tqdm
 
 from time import sleep
 from typing import Final
+
+import sys
+if hasattr(sys.modules["__main__"], "get_ipython"):
+    from tqdm import notebook as tqdm
+else:
+    from tqdm import tqdm
 
 
 class HhResumeParser:
@@ -23,7 +28,7 @@ class HhResumeParser:
         except:
             self.driver.get(href)
 
-    def get_resumes(self):
+    def get_resumes(self, spec_id):
 
         # Обход всех страниц запроса
         resume_hrefs = []
@@ -40,7 +45,7 @@ class HhResumeParser:
                 f'items_on_page=100&'
                 f'st=resumeSearch&'
                 f'relocation=living_or_relocation&'
-                f'specialization=1&'
+                f'specialization={spec_id}&'
                 f'gender=unknown&'
                 f'page={i}'
             )
@@ -59,7 +64,7 @@ class HhResumeParser:
                 continue
             resumes_data.append(self.parse_resume_info())
 
-        self.driver.close()
+        # self.driver.close()
         return resumes_data
 
     def parse_resume_info(self):
