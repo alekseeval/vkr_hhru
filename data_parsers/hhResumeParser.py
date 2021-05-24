@@ -16,6 +16,10 @@ class HhResumeParser:
     MAIN_URL: Final = 'https://irkutsk.hh.ru/'
 
     def __init__(self):
+        self.driver = None
+        self.init_driver()
+
+    def init_driver(self):
         options = webdriver.ChromeOptions()
         # options.add_argument('--headless')
         self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
@@ -26,13 +30,15 @@ class HhResumeParser:
         try:
             self.driver.get(href)
         except:
+            self.driver.quit()
+            self.init_driver()
             self.driver.get(href)
 
     def get_resumes(self, spec_id):
 
         # Обход всех страниц запроса
         resume_hrefs = []
-        for i in tqdm(range(1), desc='Обход страниц'):                                     # NOTE: WITH PROGRESS BAR
+        for i in tqdm(range(10), desc='Обход страниц'):                                     # NOTE: WITH PROGRESS BAR
             self.go_to_page(
                 f'https://irkutsk.hh.ru/search/resume?'
                 f'clusters=true&'
