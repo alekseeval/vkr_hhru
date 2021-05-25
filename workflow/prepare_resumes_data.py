@@ -1,5 +1,6 @@
 import json
 from services.db_service import DbService
+import re
 
 with open('..//data/resume_data.json', 'r') as file:
     resume_list = json.load(file)
@@ -20,19 +21,23 @@ for emp in bd_employment_orig:
     bd_employment[emp[1].lower()] = emp[0]
 del bd_employment_orig
 
+id_regex = re.compile(r'e/(.+?)\?')
 for resume in resume_list:
 
     # Резюме без ссылки и названия не рассматриваем
     if (resume['href'] is None) or (resume['title'] is None):
         resume_list.remove(resume)
         continue
+    resume['id'] = re.search(id_regex, resume['href']).group(1)
+    del resume['href']
 
     # Сопоставление региона поиска с данными справочника
     address_id = db_service.execute_script(f"SELECT id FROM area WHERE name like '{resume['address']}'")
     if len(address_id) == 0:
         resume_list.remove(resume)
         continue
-    resume['address'] = address_id[0][0]
+    del resume['address']
+    resume['area_id'] = address_id[0][0]
 
     # Зарплата приводится к числовому значению в рублях
     if resume['salary'] is not None:
