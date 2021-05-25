@@ -1,7 +1,6 @@
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
-from time import sleep
 from typing import Final
 
 import sys
@@ -154,13 +153,14 @@ class HhResumeParser:
         # Получение опыта работы соискателя
         exp_time = self.driver.find_elements_by_css_selector('.bloko-text-tertiary')[:-1]
         exp_industries = self.driver.find_elements_by_css_selector('.resume-block__experience-industries')
+        exp_positions = self.driver.find_elements_by_css_selector("div[data-qa='resume-block-experience-position']")
         resume_experience = []
-        for time, industries_block in zip(exp_time, exp_industries):
+        for time, industries_block, pos in zip(exp_time, exp_industries, exp_positions):
             industries = []
             industries_list = industries_block.find_elements_by_css_selector('.profareatree__subitem-experience')
             for el in industries_list:
                 industries.append(el.text)
-            resume_experience.append({'time': time.text, 'industries': industries})
+            resume_experience.append({'time': time.text, 'industries': industries, 'position': pos.text})
         resume['experience'] = resume_experience
 
         # Получение желаемого графика работы
