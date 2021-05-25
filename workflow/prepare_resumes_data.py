@@ -1,5 +1,4 @@
 import json
-import re
 from services.db_service import DbService
 
 with open('data/resume_data.json', 'r') as file:
@@ -29,13 +28,14 @@ for resume in resume_list:
         continue
 
     # Зарплата приводится к числовому значению в рублях
-    currency_rate = db_service.execute_script(
-        f"SELECT rate FROM currency WHERE abbr like '{resume['salary']['currency']}'"
-    )
-    if len(currency_rate) == 0:
-        resume_list.remove(resume)
-        continue
-    resume['salary'] = resume['salary']['value'] * (1/currency_rate[0][0])
+    if resume['salary'] is not None:
+        currency_rate = db_service.execute_script(
+            f"SELECT rate FROM currency WHERE abbr like '{resume['salary']['currency']}'"
+        )
+        if len(currency_rate) == 0:
+            resume_list.remove(resume)
+            continue
+        resume['salary'] = resume['salary']['value'] * (1/currency_rate[0][0])
 
     # Сопоставление региона поиска с данными справочника
     address_id = db_service.execute_script(f"SELECT id FROM area WHERE name like '{resume['address']}'")
