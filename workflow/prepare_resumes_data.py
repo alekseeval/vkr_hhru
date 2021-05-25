@@ -22,7 +22,8 @@ for emp in bd_employment_orig:
 del bd_employment_orig
 
 id_regex = re.compile(r'e/(.+?)\?')
-for resume in resume_list:
+resume_copy = [resume for resume in resume_list]
+for resume in resume_copy:
 
     # Резюме без ссылки и названия не рассматриваем
     if (resume['href'] is None) or (resume['title'] is None):
