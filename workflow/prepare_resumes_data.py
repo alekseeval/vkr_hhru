@@ -1,7 +1,7 @@
 import json
 from services.db_service import DbService
 
-with open('data/resume_data.json', 'r') as file:
+with open('..//data/resume_data.json', 'r') as file:
     resume_list = json.load(file)
 
 db_service = DbService()
@@ -27,6 +27,13 @@ for resume in resume_list:
         resume_list.remove(resume)
         continue
 
+    # Сопоставление региона поиска с данными справочника
+    address_id = db_service.execute_script(f"SELECT id FROM area WHERE name like '{resume['address']}'")
+    if len(address_id) == 0:
+        resume_list.remove(resume)
+        continue
+    resume['address'] = address_id[0][0]
+
     # Зарплата приводится к числовому значению в рублях
     if resume['salary'] is not None:
         currency_rate = db_service.execute_script(
@@ -35,14 +42,10 @@ for resume in resume_list:
         if len(currency_rate) == 0:
             resume_list.remove(resume)
             continue
-        resume['salary'] = resume['salary']['value'] * (1/currency_rate[0][0])
-
-    # Сопоставление региона поиска с данными справочника
-    address_id = db_service.execute_script(f"SELECT id FROM area WHERE name like '{resume['address']}'")
-    if len(address_id) == 0:
-        resume_list.remove(resume)
-        continue
-    resume['address'] = address_id[0][0]
+        salary_value = resume['salary']['value'] * (1/currency_rate[0][0])  # перевод в рубли
+        salary_value = int(salary_value)  # округление до целого
+        salary_value = salary_value - salary_value % -500  # округление до ближайшего кратного 500 значения
+        resume['salary'] = salary_value
 
     # Сопоставление специализации резюме со справочником
     for spec in resume['specializations']:
@@ -72,3 +75,6 @@ for resume in resume_list:
     # Сопоставление занятости со справочником API
     for i in range(len(resume['employment'])):
         resume['employment'][i] = bd_employment.get(resume['employment'][i])
+
+with open('..//data/resume_data_prepared.json', 'w') as file:
+    json.dump(resume_list, file)
