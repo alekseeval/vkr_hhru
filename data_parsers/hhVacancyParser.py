@@ -31,7 +31,7 @@ class HhVacancyParser:
         if self.api_access_token is not None:
             return self.api_access_token
 
-        with open('com.alekseev.workflow/oauth_data/api_token', 'r') as file:
+        with open('workflow/oauth_data/api_token', 'r') as file:
             file_data = json.load(file)
             self.api_access_token = file_data['access_token']
 
@@ -39,7 +39,7 @@ class HhVacancyParser:
         if self.__test_access_key(self.api_access_token):
             return self.api_access_token
 
-        with open('com.alekseev.workflow/oauth_data/api_credentials', 'r') as file:
+        with open('workflow/oauth_data/api_credentials', 'r') as file:
             file_data = json.load(file)
             client_id = file_data['client_id']
             client_secret = file_data['client_secret']
@@ -55,7 +55,7 @@ class HhVacancyParser:
         assert 'error' not in data
 
         self.api_access_token = data['access_token']
-        with open('com.alekseev.workflow/oauth_data/api_token', 'w') as file:
+        with open('workflow/oauth_data/api_token', 'w') as file:
             json.dump(data, file)
         return self.api_access_token
 
