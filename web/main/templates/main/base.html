@@ -1,0 +1,33 @@
+<div id="nav-sidebar" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 320px;">
+    <a href="{% url 'home' %}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+      <h3 class="fs-4"><i class="bi bi-vector-pen"></i>Resume Helper</h3>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li class="nav-item">
+        <a href="{% url 'home' %}" class="nav-link text-white {% if active_el == 'home' %}active{% endif %}" aria-current="page">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
+          Рекомендации
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{% url 'resume_list' %}" class="nav-link text-white {% if active_el == 'rl_list' %}active{% endif %}" aria-current="page">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
+          Мои резюме
+        </a>
+      </li>
+    </ul>
+    <hr>
+    <div class="dropdown">
+      <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+        <strong>mdo</strong>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-dark text-small shadow show" aria-labelledby="dropdownUser1" aria-labelledby="dropdownUser1" style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate(0px, -34px);">
+        <li><a class="dropdown-item" href="{% url 'home' %}">New resume...</a></li>
+        <li><a class="dropdown-item" href="{% url 'home' %}">Profile</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="{% url 'home' %}">Sign out</a></li>
+      </ul>
+    </div>
+  </div>
