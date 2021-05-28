@@ -1,6 +1,10 @@
 from django.shortcuts import render
 
 
+def login(request):
+    return render(request, 'main/login.html')
+
+
 def home(request):
     top_resumes = get_top_resumes()
     return render(request, 'main/home.html', {'active_el': 'home',
