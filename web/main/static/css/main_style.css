@@ -31,3 +31,11 @@ hr {
     font-size: 2em;
     margin-right: 0.5em
 }
+#content{
+    width: 100%;
+    background-color: #fafafa;
+}
+.resume-preview{
+    min-width: 900px;
+    width: 50%;
+}
