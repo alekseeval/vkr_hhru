@@ -39,3 +39,9 @@ hr {
     min-width: 900px;
     width: 50%;
 }
+h1, h2, h3, h4 , h6{
+    font-family: 'Raleway', sans-serif;
+}
+body{
+    font-family: 'Roboto', sans-serif;
+}
