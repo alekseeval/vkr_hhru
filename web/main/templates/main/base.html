@@ -48,12 +48,9 @@
                         Мои резюме:
                       </div>
                       <div class="list-group list-group-flush">
-<!--                          TODO: сделать возможность active -->
-                          <a href="#" class="list-group-item list-group-item-action {% if active_el == 'id_1' %}active{% endif %}">Данные по резюме</a>
-                          <a href="#" class="list-group-item list-group-item-action {% if active_el == 'id_2' %}active{% endif %}">Данные по резюме</a>
-                          <a href="#" class="list-group-item list-group-item-action {% if active_el == 'id_3' %}active{% endif %}">Данные по резюме</a>
-                          <a href="#" class="list-group-item list-group-item-action {% if active_el == 'id_4' %}active{% endif %}">Данные по резюме</a>
-                          <a href="#" class="list-group-item list-group-item-action {% if active_el == 'id_5' %}active{% endif %}">Данные по резюме</a>
+                            {% for el in top_resumes %}
+                                <a href="/resume?resume_id={{ el.id }}" class="list-group-item list-group-item-action {% if active_el == el.id %}active{% endif %}">{{ el.title }}</a>
+                            {% endfor %}
                       </div>
                     </div>
 
