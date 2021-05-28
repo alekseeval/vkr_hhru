@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ru">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Главная</title>
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+<!--    NOTE: FONTS-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway&family=Roboto&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+</head>
+<body>
+
+    <div class="sidenav">
+         <div class="login-main-text">
+            <h1><i class="bi bi-journal-check mb-2" ></i> Resume helper</h1>
+<!--             TODO: Описать назначение приложения-->
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque luctus tortor erat, at convallis mauris venenatis in. Mauris nunc leo, convallis sed nibh sed, luctus fringilla orci. Nullam ultricies nisi odio, in lacinia ex iaculis id. Curabitur at risus velit. Quisque ut risus vitae velit varius hendrerit. Aenean libero nibh, scelerisque quis placerat vitae, malesuada sit amet dui. Morbi est turpis, dictum ultrices ultricies sit amet, dignissim non urna. Proin egestas et sem non fringilla. Etiam sollicitudin tempor sapien, id viverra quam ultricies at. Sed sit amet nibh diam. Sed maximus ultricies pulvinar. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Quisque eget elit rutrum, euismod metus sodales, mollis dui. Nulla aliquet sit amet massa vel laoreet. Sed id bibendum urna.</p>
+             <p>Suspendisse eget purus quis sapien pretium tincidunt id nec metus. Proin vel leo quis sapien condimentum placerat. Pellentesque pellentesque, enim non mollis tempor, tortor sapien commodo diam, at posuere lacus mauris sed diam. Curabitur et leo at ligula dapibus posuere nec sit amet risus. Donec tristique odio vel justo euismod, non ultricies tellus faucibus. Quisque volutpat laoreet feugiat. Morbi nec purus non lectus malesuada placerat. Maecenas congue a dui sit amet congue. Vivamus tristique, nulla eu viverra porta, sapien ex dapibus mi, quis elementum dolor justo non augue. Etiam interdum auctor arcu. Phasellus convallis ex quis justo auctor vehicula. Vestibulum sit amet lectus elit. Aenean egestas blandit nisl quis faucibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;</p>
+         </div>
+      </div>
+
+
+
+      <div class="main" style="height: 100%; display: flex; justify-content: center; align-items: center;">
+         <div style="width: 420px;">
+
+
+            <div class="card" style="border-width: 2px">
+            <article class="card-body">
+                <a href="" class="float-right btn btn-outline-primary">Sign up</a>
+                <h4 class="card-title mb-4 mt-1">Sign in</h4>
+                <p>
+                    <a href="" class="btn btn-block btn-outline-danger"> <i class="fab fa-twitter"></i>   Login via hh.ru</a>
+                </p>
+                <hr>
+                <form>
+                <div class="form-group">
+                    <input name="" class="form-control" placeholder="Email or login" type="email">
+                </div> <!-- form-group// -->
+                <div class="form-group">
+                    <input class="form-control" placeholder="******" type="password">
+                </div> <!-- form-group// -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-block"> Login  </button>
+                        </div> <!-- form-group// -->
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <a class="small" href="#">Forgot password?</a>
+                    </div>
+                </div> <!-- .row// -->
+            </form>
+            </article>
+            </div> <!-- card.// -->
+
+
+         </div>
+      </div>
+
+</body>
+</html>
