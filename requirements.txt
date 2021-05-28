@@ -1,0 +1,5 @@
+django
+peewee
+tqdm
+selenium
+webdriver_manager
