@@ -6,4 +6,12 @@ def home(request):
 
 
 def resume_list(request):
-    return render(request, 'main/resume_list.html', {'active_el': 'rl_list'})
+    # TODO: Написать функционал по получению резюме пользователя
+    resumes = [
+        'resume1',
+        'resume2',
+        'resume3',
+        'resume4',
+        'resume5'
+    ]
+    return render(request, 'main/resume_list.html', {'active_el': 'rl_list', 'resumes': resumes})
