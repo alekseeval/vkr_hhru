@@ -3,3 +3,4 @@ peewee
 tqdm
 selenium
 webdriver_manager
+psycopg2
