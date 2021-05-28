@@ -6,7 +6,8 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Список резюме:</h1>
-    <p>Резюме1</p>
-    <p>Резюме2</p>
+    <div class="alert alert-info mt-4">
+        <h3>{{ resume_info.title }} ({{ resume_info.id }})</h3>
+        <p>{{ resume_info.desc }}</p>
+    </div>
 {% endblock %}
