@@ -6,7 +6,7 @@ from typing import Final
 from time import sleep
 
 
-class HhVacancyParser:
+class HhApiParser:
     API_URL: Final = 'https://api.hh.ru'
     API_VACANCIES_URL: Final = API_URL + '/vacancies'
     api_access_token = None
@@ -179,4 +179,22 @@ class HhVacancyParser:
         request = requests.get(f'{self.API_URL}/{sub_href}', req_param, timeout=50)
         data = json.loads(request.content.decode())
         request.close()
+        return data
+
+    def get_auth_info(self, access_token):
+        response = requests.get(f'{self.API_URL}/me', headers={'Authorization': f'Bearer {access_token}'})
+        data = response.json()
+        response.close()
+        return data
+
+    def get_applicant_resumes(self, access_token):
+        response = requests.get(f'{self.API_URL}/resumes/mine', headers={'Authorization': f'Bearer {access_token}'})
+        data = response.json()
+        response.close()
+        return data
+
+    def get_applicant_resume_data(self, resume_id, access_token):
+        response = requests.get(f'{self.API_URL}/resumes/{resume_id}', headers={'Authorization': f'Bearer {access_token}'})
+        data = response.json()
+        response.close()
         return data

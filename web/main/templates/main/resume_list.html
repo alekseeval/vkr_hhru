@@ -8,9 +8,9 @@
 {% block content %}
     <h1>Список резюме:</h1>
     {% for el in resumes %}
-        <a href="/resume?resume_id={{ el.id }}" class="alert alert-info mt-2 resume-preview">
+        <a href="/app/resume?resume_id={{ el.id }}" class="alert alert-info mt-2 resume-preview">
             <h3>{{ el.title }}</h3>
-            <p>{{ el.desc }}</p>
+            <p>{{ el.skills }}</p>
         </a>
     {% endfor %}
 {% endblock %}

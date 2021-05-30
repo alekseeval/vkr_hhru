@@ -53,7 +53,7 @@
                       </div>
                       <div class="list-group list-group-flush">
                             {% for el in top_resumes %}
-                                <a href="/resume?resume_id={{ el.id }}" class="list-group-item list-group-item-action {% if active_el == el.id %}active{% endif %}">{{ el.title }}</a>
+                                <a href="/app/resume?resume_id={{ el.id }}" class="list-group-item list-group-item-action {% if active_el == el.id %}active{% endif %}">{{ el.title }}</a>
                             {% endfor %}
                       </div>
                     </div>
@@ -72,13 +72,13 @@
             <div class="dropdown">
               <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdown-menu" data-toggle="dropdown" aria-expanded="false">
                 <i class="bi bi-person-circle"></i>
-                <strong>Андрей Леонидович</strong>
+                <strong>{{ user }}</strong>
               </a>
               <ul id="nav-drop-down" class="dropdown-menu" style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate(0px, -50px);">
                 <li><a class="dropdown-item" href="{% url 'home' %}">New resume...</a></li>
                 <li><a class="dropdown-item" href="{% url 'home' %}">Profile</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{% url 'login' %}">Sign out</a></li>
+                <li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
               </ul>
             </div>
         </div>

@@ -3,10 +3,10 @@ from tqdm import tqdm
 import threading
 import gc
 
-from data_parsers.hhVacancyParser import HhVacancyParser
+from data_parsers.hhApiParser import HhApiParser
 from services.db_service import DbService
 
-parser = HhVacancyParser()
+parser = HhApiParser()
 cur_date = {
     'from': (datetime.now() - timedelta(days=1)),
     'to': datetime.now()

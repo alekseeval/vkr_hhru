@@ -43,7 +43,10 @@
 <!--                <a href="" class="float-right btn btn-outline-primary">Sign up</a>-->
                 <h5 class="card-title mb-4 mt-1">Для продолжения работы с приложением, войдите под своей учетной записью hh.ru</h5>
                 <p style="display: flex; justify-content: center">
-                    <a href="{% url 'home' %}" class="btn btn-block btn-danger" style="width: fit-content; padding-left: 3em; padding-right: 3em;"> <img alt="hh_logo" src="{% static 'pic/min-hh-white.svg' %}" style="width: 2.5em"/>   Login via hh.ru</a>
+                    <form method="post">
+                    {% csrf_token %}
+                    <button href="{% url 'home' %}" class="btn btn-block btn-danger" style="width: fit-content; padding-left: 3em; padding-right: 3em;"> <img alt="hh_logo" src="{% static 'pic/min-hh-white.svg' %}" style="width: 2.5em"/>   Login via hh.ru</button>
+                    </form>
                 </p>
 <!--                <hr>-->
 <!--                <form>-->
