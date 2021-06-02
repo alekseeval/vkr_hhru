@@ -6,11 +6,49 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Список резюме:</h1>
-    {% for el in resumes %}
-        <a href="/app/resume?resume_id={{ el.id }}" class="alert alert-info mt-2 resume-preview">
-            <h3>{{ el.title }}</h3>
-            <p>{{ el.skills }}</p>
-        </a>
+<!--    <h1 class="mb-3">Список резюме:</h1>-->
+    {% for resume in resumes %}
+        <div class="alert alert-primary mt-2 resume-preview">
+            <h2 class="alert-heading mb-3">{{ resume.title }}</h2>
+
+            <div class="row">
+                <div class="col-8">
+                    <p>
+                        Занятость:
+                        {% for schedule in resume.schedules %}
+                        <span class="badge badge-light mr-1 mb-2" style="font-size: 0.9em; font-weight: normal;">{{ schedule.name }}</span>
+                        {% endfor %}
+                        <br>
+                        График:
+                        {% for employ in resume.employments %}
+                        <span class="badge badge-light mr-1" style="font-size: 0.9em; font-weight: normal;">{{ employ.name }}</span>
+                        {% endfor %}
+                        <br>
+                    </p>
+                </div>
+                <div class="col-4 text-center text-dark">
+                    <h1 class="font-weight-bold">{{ resume.salary.amount }}  {{ resume.salary.currency }}</h1>
+                </div>
+            </div>
+
+
+            <hr>
+
+
+            <div class="row skills">
+                <div class="col-8">
+                    {% for skill in resume.skill_set %}
+                    <span class="badge badge-secondary mr-1">{{ skill }}</span>
+                    {% endfor %}
+                </div>
+                <div class="col-4 d-flex justify-content-end">
+                    <a>
+                        <a role="button" href="/app/resume?resume_id={{ resume.id }}" class="btn btn-dark" style="font-size: 0.9em">Перейти к оценке резюме</a>
+                    </a>
+                </div>
+            </div>
+
+
+        </div>
     {% endfor %}
 {% endblock %}

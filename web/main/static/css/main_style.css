@@ -37,9 +37,10 @@ hr {
 }
 .resume-preview{
     min-width: 900px;
-    width: 50%;
+    width: 75%;
+    color: black;
 }
-h1, h2, h3, h4, h5, h6{
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6{
     font-family: 'Raleway', sans-serif;
 }
 body{
@@ -52,4 +53,10 @@ body{
     background-color: #ffc6d2 !important;
     color: black !important;
     border-color: #a9a9a9 !important;
+}
+.card-title{
+    color: black;
+}
+.skills{
+    font-size: 1.25em;
 }
