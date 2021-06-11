@@ -3,11 +3,209 @@
 
 {% block external %}
     <link rel="stylesheet" href="{% static 'css/main_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/callouts.css' %}">
+    <script src="{% static 'js/save_resume.js' %}"></script>
+    <script src="{% static 'js/text_area_script.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-    <div class="alert alert-info mt-4">
-        <h3>{{ resume_info.title }} ({{ resume_info.id }})</h3>
-        <p>{{ resume_info.desc }}</p>
+    <span id="id" hidden>{{ resume.id }}</span>
+
+    <div class="row">
+        <div class="col-md-7 border-right pr-4">
+        <form>
+            <div class="form-group row ml-2">
+
+
+                <div id="user-info-block" class="row border-bottom mr-1">
+
+                    <div class="form-group row col-md-9">
+                        <h3 class="col-md-12">Личная информация:</h3>
+                        <div class="form-group col-md-4">
+                            <label for="last_name" class="col-form-label col-md-4">Фамилия</label>
+                            <div>
+                                <input required class="form-control" type="text" id="last_name" value="{% if resume.last_name == None %}{% else %}{{ resume.last_name }}{% endif %}">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="first_name" class="col-form-label col-md-4">Имя</label>
+                            <div>
+                                <input required class="form-control" type="text" id="first_name" value="{% if resume.first_name == None %}{% else %}{{ resume.first_name }}{% endif %}">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div>
+                                <label for="second_name" class="col-form-label">Отчество</label>
+                            </div>
+                            <input class="form-control" type="text" id="second_name"  value="{% if resume.middle_name == None %}{% else %}{{ resume.middle_name }}{% endif %}">
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <label for="birth_date">Дата рождения: </label>
+                            <input required class="form-control" type="date" id="birth_date" value="{{ resume.birth_date }}" style="width: 13em">
+                        </div>
+                    </div>
+
+                    <div id="photo" class="col-md-3 p-4">
+                        {% if resume.photo == None %}
+                            <img src="{% static 'pic/profile_photo.jpg' %}" class="rounded img-thumbnail">
+                        {% else %}
+                            <img src="{{ resume.photo.medium }}" class="rounded img-thumbnail">
+                        {% endif %}
+                    </div>
+
+                </div>
+
+
+                <div id="user-contacts-block" class="form-group col-md-12 border-bottom mt-3">
+                        <h3 class="mb-4">Контакты: <a href="https://hh.ru/applicant/resumes/edit/experience?resume={{ resume.id }}" role="button" target="_blank" class="key-skill badge badge-danger mr-1" style="font-size: 1rem"><i class="bi bi-gear"></i></a></h3>
+                        <div class="form-group row">
+                            {% for contact in resume.contact %}
+                            <div class="form-group row col-md-6">
+                                {% if contact.type.id == 'email' %}
+                                <label for="email-{{ contact.value }}" class="col-form-label col-md-3">Почта:</label>
+                                <div class="col-md-9">
+                                    <input class="form-control form-control-plaintext pl-2" disabled type="email" id="email-{{ contact.value }}" value="{{ contact.value }}">
+                                    {% if contact.preferred %}
+                                    <small id="preferred" class="text-primary">Предпочитаемый способ связи</small>
+                                    {% endif %}
+                                </div>
+                                {% else %}
+                                <label for="phone-{{ contact.value.formatted }}" class="col-form-label col-md-3">Телефон:</label>
+                                <div class="col-md-9">
+                                    <input disabled class="form-control form-control-plaintext pl-2" type="tel" id="phone-{{ contact.value.formatted }}" value="{{ contact.value.formatted }}">
+                                    {% if contact.preferred %}
+                                    <small id="preferred" class="text-muted text-primary">Предпочитаемый</small>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+
+
+                <div id="prof-info-block" class="form-group col-md-12">
+
+
+                    <div id="salary" class="form-group mt-4 row" style="margin-bottom: 0em">
+<!--                        <label for="title" class="col-form-label col-md-3">Желаемая должность:</label>-->
+                        <div class="form-group col-md-8">
+                            <input required type="text" id="title" class="form-control-lg form-control-plaintext" placeholder="Data Analyst" value="{{ resume.title }}" style="font-size: 1.75em">
+                        </div>
+                        <div class="form-group col-md-4 row">
+                            <input placeholder="0000" type="number" min="500" step="500" id="salary-amount" class="form-control form-control-plaintext col-md-7" value="{{ resume.salary.amount }}" style="font-size: 2.25em">
+                            <select type="number" id="salary-currency" class="form-control form-control-plaintext col-md-5" style="font-size: 1.5em; align-self: center">
+                                <option id="None">Валюта</option>
+                                {% for cur in currencies %}
+                                    <option {% if cur == resume.salary.currency %}selected="selected"{% endif %}>{{ cur }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div id="specializations" class="form-group" style="font-size: 1em; margin-bottom: 2.5rem; font-family: 'Raleway', sans-serif;">
+                        <p style="margin-bottom: 0.2rem;">{{ resume.specialization.0.profarea_name }}</p>
+                        {% for spec in resume.specialization %}
+                        <p style="margin-bottom: 0.2rem;">    &mdash; {{spec.name}}</p>
+                        {% endfor %}
+                    </div>
+
+
+
+                    <div id="experience" class="form-group" style="margin-bottom: 2em">
+                        <h3 class="mb-3">Опыт работы: <a href="https://hh.ru/applicant/resumes/edit/experience?resume={{ resume.id }}" role="button" target="_blank" class="key-skill badge badge-danger mr-1" style="font-size: 1rem"><i class="bi bi-gear"></i></a></h3></h3>
+                        {% for experience in resume.experience %}
+                        <div class="row border mb-3">
+                            <h5 class="col-md-12 mt-1">{{ experience.position }}</h5>
+                            <h6 class="col-md-12"> << {{ experience.company }} >> </h6>
+                            <p class="col-md-12 mt-1"><u>Период работы:</u> &nbsp;&nbsp; {{ experience.start }} &mdash; {% if experience.end %}{{ experience.end }}{% else %}по настоящее время{% endif %}</p>
+                            <pre class="col-md-12">{{ experience.description }}</pre>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+
+                    <div id="recommendations" class="form-group mb-5">
+                        <h3>Рекомендации: <a href="https://hh.ru/applicant/resumes/edit/experience?resume={{ resume.id }}&field=recommendation" role="button" target="_blank" class="key-skill badge badge-danger mr-1" style="font-size: 1rem"><i class="bi bi-gear"></i></a></h3>
+                        {% for recommendation in resume.recommendation %}
+                            <div class="border-left ml-2 pl-2 mb-3" style="border-width: 2px !important;">
+                                <h5 style="color: #666666">{{ recommendation.organization }}</h5>
+                                {{ recommendation.name }} ({{ recommendation.position }})
+                            </div>
+                        {% endfor %}
+                    </div>
+
+
+                    <div id="schedules" class="form-group row" style="margin-left: 0rem">
+                        <label class="h5" style="font-size: 1em; width: 9em">График работы: </label>
+                        {% for schedule in resume.schedules %}
+                        <span class="badge badge-info mr-1" style="font-size: 0.8em; font-weight: normal; height: 1.65em">{{ schedule.name }}</span>
+                        {% endfor %}
+                    <a href="https://hh.ru/applicant/resumes/edit/position?resume={{ resume.id }}" role="button" target="_blank" class="key-skill badge badge-danger mr-1" style="font-weight: 400;font-size: 0.8em; height: 1.65em"><i class="bi bi-gear"></i> Изменить</a>
+                    </div>
+
+
+                    <div id="employment" class="form-group row" style="margin-left: 0rem">
+                        <label class="h5" style="font-size: 1em; width: 9em">Занятость: </label>
+                        {% for employ in resume.employments %}
+                        <span class="badge badge-info mr-1" style="font-size: 0.8em; font-weight: normal; height: 1.65em">{{ employ.name }}</span>
+                        {% endfor %}
+                    <a href="https://hh.ru/applicant/resumes/edit/position?resume={{ resume.id }}" role="button" target="_blank" class="key-skill badge badge-danger mr-1" style="font-weight: 400;font-size: 0.8em; height: 1.65em"><i class="bi bi-gear"></i> Изменить</a>
+                    </div>
+
+
+                    <div id="key_skills" class="form-group row" style="margin-left: 0rem">
+                        <label class="h5 mt-2" style="font-size: 1em; width: 11em">Ключевые навыки: </label>
+                        <div class="skills form-group col-md-9">
+                            {% for skill in resume.skill_set %}
+                            <span class="key-skill badge badge-secondary mr-1">{{ skill }}</span>
+                            {% endfor %}
+                            <a href="https://hh.ru/applicant/resumes/edit/experience?resume={{ resume.id }}&field=keySkills" role="button" target="_blank" class="badge badge-danger mr-1" style="font-weight: 400;font-size: 0.65em; height: 1.65em"><i class="bi bi-gear"></i> Изменить</a>
+                        </div>
+                    </div>
+
+
+                    <div id="about" class="form-group">
+                        <label class="h5" for="skills">Обо мне:</label>
+                        <textarea spellcheck="true" class="form-control" aria-label="With textarea" id="skills">{% if resume.skills %}{{ resume.skills }}{% else %}{% endif %}</textarea>
+                    </div>
+
+                    <div class="col-md-12 row" style="justify-content: end">
+                        <button type="submit" href="#" class="btn btn-success">Сохранить изменения</button>
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+        </form>
+        </div>
+
+        <div id="reports" class="col-md-5 sticky-top" style="overflow-x: hidden; overflow-y: scroll; height: 95vh">
+
+            {% for warning in warnings %}
+            <div class="callout callout-{{ warning.type }}">
+                <h4>{{ warning.title }}</h4>
+                    <p>{{ warning.text }}</p>
+                    <p>{{ warning.sub_text }}</p>
+                    {%  if warning.sub_list %}
+                        <p class="h5">
+                        {% for el in warning.sub_list %}
+                            &mdash; {{ el }}<br>
+                        {% endfor %}
+                        </p>
+                    {% endif %}
+<!--                TODO: раскрывающийся список (?)-->
+            </div>
+            {% endfor %}
+
+        </div>
+
     </div>
+
 {% endblock %}

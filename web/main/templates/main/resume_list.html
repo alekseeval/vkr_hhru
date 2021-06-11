@@ -14,12 +14,12 @@
             <div class="row">
                 <div class="col-8">
                     <p>
-                        Занятость:
+                        График:
                         {% for schedule in resume.schedules %}
                         <span class="badge badge-light mr-1 mb-2" style="font-size: 0.9em; font-weight: normal;">{{ schedule.name }}</span>
                         {% endfor %}
                         <br>
-                        График:
+                        Занятость:
                         {% for employ in resume.employments %}
                         <span class="badge badge-light mr-1" style="font-size: 0.9em; font-weight: normal;">{{ employ.name }}</span>
                         {% endfor %}

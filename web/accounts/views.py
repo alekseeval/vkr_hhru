@@ -61,7 +61,6 @@ def login_catch_user_code(request):
         user = User.objects.get(id=hh_user.user.id)
     login(request, user)
     request.session.set_expiry(token_data.get('expires_in') - 30)
-    print(f'---> Session expires in {token_data.get("expires_in") - 30}')
 
     return redirect('home')
 

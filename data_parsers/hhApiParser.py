@@ -198,3 +198,18 @@ class HhApiParser:
         data = response.json()
         response.close()
         return data
+
+    def change_user_resume_data(self, resume_id, change_params, access_token):
+
+        response = requests.put(f'{self.API_URL}/resumes/{resume_id}', json=change_params,
+                                headers={'Authorization': f'Bearer {access_token}'})
+        response.close()
+
+        return True
+
+    def get_vacancies_similar_to_resume(self, resume_id, access_token):
+        response = requests.get(f'{self.API_URL}/resumes/{resume_id}/similar_vacancies', params={'per_page': 50},
+                                headers={'Authorization': f'Bearer {access_token}'})
+        data = response.json()
+        response.close()
+        return data['items']

@@ -27,8 +27,14 @@
          <div class="login-main-text">
             <h1><i class="bi bi-journal-check mb-2" ></i> Resume helper</h1>
 <!--             TODO: Описать назначение приложения-->
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque luctus tortor erat, at convallis mauris venenatis in. Mauris nunc leo, convallis sed nibh sed, luctus fringilla orci. Nullam ultricies nisi odio, in lacinia ex iaculis id. Curabitur at risus velit. Quisque ut risus vitae velit varius hendrerit. Aenean libero nibh, scelerisque quis placerat vitae, malesuada sit amet dui. Morbi est turpis, dictum ultrices ultricies sit amet, dignissim non urna. Proin egestas et sem non fringilla. Etiam sollicitudin tempor sapien, id viverra quam ultricies at. Sed sit amet nibh diam. Sed maximus ultricies pulvinar. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Quisque eget elit rutrum, euismod metus sodales, mollis dui. Nulla aliquet sit amet massa vel laoreet. Sed id bibendum urna.</p>
-             <p>Suspendisse eget purus quis sapien pretium tincidunt id nec metus. Proin vel leo quis sapien condimentum placerat. Pellentesque pellentesque, enim non mollis tempor, tortor sapien commodo diam, at posuere lacus mauris sed diam. Curabitur et leo at ligula dapibus posuere nec sit amet risus. Donec tristique odio vel justo euismod, non ultricies tellus faucibus. Quisque volutpat laoreet feugiat. Morbi nec purus non lectus malesuada placerat. Maecenas congue a dui sit amet congue. Vivamus tristique, nulla eu viverra porta, sapien ex dapibus mi, quis elementum dolor justo non augue. Etiam interdum auctor arcu. Phasellus convallis ex quis justo auctor vehicula. Vestibulum sit amet lectus elit. Aenean egestas blandit nisl quis faucibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;</p>
+                <p></p>
+                <p>Данное приложение призвано помочь вам проанализировать и исправить свои ошибки при заполнении вашего
+                    резюме. Для этого используются современные технологии машинного обучения и актуальные данные рынка
+                    труда. Приложение позволяет в короткий срок получить рекомендации по улучшению вашего резюме и
+                    оперативно внести соответствующие правки.</p>
+                <p>Приложение анализирует составленные и опубликованные вами резюме на сервисах HeadHunter, поэтому
+                    для его работы требуется авторизация пользователя, с использованием аккаунта соискателя на "hh.ru".
+                </p>
          </div>
       </div>
 
@@ -45,28 +51,9 @@
                 <p style="display: flex; justify-content: center">
                     <form method="post">
                     {% csrf_token %}
-                    <button href="{% url 'home' %}" class="btn btn-block btn-danger" style="width: fit-content; padding-left: 3em; padding-right: 3em;"> <img alt="hh_logo" src="{% static 'pic/min-hh-white.svg' %}" style="width: 2.5em"/>   Login via hh.ru</button>
+                    <button href="{% url 'home' %}" class="btn btn-block btn-danger" style="width: 100%; padding-left: 3em; padding-right: 3em;"> <img alt="hh_logo" src="{% static 'pic/min-hh-white.svg' %}" style="width: 2.5em"/>&nbsp;&nbsp;Login via hh.ru</button>
                     </form>
                 </p>
-<!--                <hr>-->
-<!--                <form>-->
-<!--                <div class="form-group">-->
-<!--                    <input name="" class="form-control" placeholder="Email or login" type="email">-->
-<!--                </div> &lt;!&ndash; form-group// &ndash;&gt;-->
-<!--                <div class="form-group">-->
-<!--                    <input class="form-control" placeholder="******" type="password">-->
-<!--                </div> &lt;!&ndash; form-group// &ndash;&gt;-->
-<!--                <div class="row">-->
-<!--                    <div class="col-md-6">-->
-<!--                        <div class="form-group">-->
-<!--                            <button type="submit" class="btn btn-primary btn-block"> Login  </button>-->
-<!--                        </div> &lt;!&ndash; form-group// &ndash;&gt;-->
-<!--                    </div>-->
-<!--                    <div class="col-md-6 text-right">-->
-<!--                        <a class="small" href="#">Forgot password?</a>-->
-<!--                    </div>-->
-<!--                </div> &lt;!&ndash; .row// &ndash;&gt;-->
-<!--            </form>-->
             </article>
             </div> <!-- card.// -->
 

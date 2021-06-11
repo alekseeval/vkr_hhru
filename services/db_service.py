@@ -242,6 +242,21 @@ class DbService:
             area_id=area.get('id')
         )
 
+    def load_resumes(self, resumes):
+
+        for resume in resumes:
+            with self.db_handle.cursor() as cursor:
+                cursor.execute("""
+                    INSERT INTO resume
+                    VALUES (%(id)s, %(title)s, %(have_photo)s, %(salary)s, %(about)s, %(higher_educations_number)s, %(key_skills)s, %(area_id)s, %(schedule)s, %(employment)s, %(specializations)s, %(total_experience)s)
+                """, resume)
+
+        self.db_handle.commit()
+
+        print(f'----> Into table specialization was inserted {len(resumes)} values')
+
+        return True
+
     # --------------------------------------------------------------------------------------
     # file      --  файл в котором записан скрипт
     # --------------------------------------------------------------------------------------
@@ -254,8 +269,11 @@ class DbService:
     # --------------------------------------------------------------------------------------
     # script_str    --  строка SQL запроса
     # --------------------------------------------------------------------------------------
-    def execute_script(self, script_str):
-        cursor = self.db_handle.execute_sql(script_str)
+    def execute_script(self, script_str, params=None):
+        if params is not None:
+            cursor = self.db_handle.execute_sql(script_str, params)
+        else:
+            cursor = self.db_handle.execute_sql(script_str)
         data = []
         for row in cursor:
             data.append(row)

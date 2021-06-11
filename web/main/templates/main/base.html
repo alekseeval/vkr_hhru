@@ -63,7 +63,7 @@
 
                 </li>
 
-                {% if top_resumes|length == 5 %}
+                {% if top_resumes|length > 3 %}
                     <a href="{% url 'resume_list' %}" class="nav-item link-info text-right h5">
                         View all... <i class="bi bi-chevron-double-right"></i>
                     </a>
@@ -78,7 +78,7 @@
                 <strong>{{ user }}</strong>
               </a>
               <ul id="nav-drop-down" class="dropdown-menu" style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate(0px, -50px);">
-                <li><a class="dropdown-item" href="{% url 'home' %}">New resume...</a></li>
+<!--                <li><a class="dropdown-item" href="{% url 'home' %}">New resume...</a></li>-->
                 <li><a class="dropdown-item" href="{% url 'home' %}">Profile</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
