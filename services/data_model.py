@@ -24,33 +24,7 @@ class Address(Model):
 
     class Meta:
         primary_key = False
-        db_table = 'address'
-        database = db_handle
-
-
-class MetroStation(Model):
-    station_id = TextField()
-    station_name = TextField()
-    line_id = TextField()
-    line_name = TextField()
-    lat = DecimalField()
-    lng = DecimalField()
-
-    class Meta:
-        primary_key = False
-        db_table = 'metro_station'
-        database = db_handle
-
-
-class AddressMetro(Model):
-    address_lat = DecimalField()
-    address_lng = DecimalField()
-    metro_station_lat = DecimalField()
-    metro_station_lng = DecimalField()
-
-    class Meta:
-        primary_key = False
-        db_table = 'address_metro'
+        db_table = 'addresses'
         database = db_handle
 
 
@@ -62,7 +36,7 @@ class Currency(Model):
     default = BooleanField()
 
     class Meta:
-        db_table = 'currency'
+        db_table = 'currencies'
         database = db_handle
 
 
@@ -71,7 +45,7 @@ class Area(Model):
     name = TextField()
 
     class Meta:
-        db_table = 'area'
+        db_table = 'areas'
         database = db_handle
 
 
@@ -82,7 +56,7 @@ class Specialization(Model):
     name = TextField()
 
     class Meta:
-        db_table = 'specialization'
+        db_table = 'specializations'
         database = db_handle
 
 
@@ -91,7 +65,7 @@ class Experience(Model):
     name = TextField()
 
     class Meta:
-        db_table = 'experience'
+        db_table = 'experiences'
         database = db_handle
 
 
@@ -100,7 +74,7 @@ class Schedule(Model):
     name = CharField(max_length=16)
 
     class Meta:
-        db_table = 'schedule'
+        db_table = 'schedules'
         database = db_handle
 
 
@@ -109,7 +83,7 @@ class Employment(Model):
     name = CharField(max_length=22)
 
     class Meta:
-        db_table = 'employment'
+        db_table = 'employments'
         database = db_handle
 
 
@@ -145,19 +119,28 @@ class Vacancy(Model):
         database = db_handle
 
 
-class SpecializationVacancy(Model):
+class VacancySpecialization(Model):
     vacancy_id = ForeignKeyField(Vacancy, column_name='vacancy_id')
     specialization_id = ForeignKeyField(Specialization, column_name='specialization_id')
 
     class Meta:
         primary_key = False
-        db_table = 'specialization_vacancy'
+        db_table = 'vacancy_specialization'
+        database = db_handle
+
+
+class KeySkill(Model):
+    id = BigIntegerField(primary_key=True)
+    name = TextField()
+
+    class Meta:
+        db_table = 'key_skills'
         database = db_handle
 
 
 class VacancySkill(Model):
     vacancy_id = ForeignKeyField(Vacancy, column_name='vacancy_id')
-    skill_name = TextField()
+    skill_id = ForeignKeyField(KeySkill, column_name='skill_id')
 
     class Meta:
         primary_key = False
@@ -170,7 +153,7 @@ class EmployerType(Model):
     name = CharField(max_length=22)
 
     class Meta:
-        db_table = 'employer_type'
+        db_table = 'types_of_employers'
         database = db_handle
 
 
@@ -185,7 +168,7 @@ class Employer(Model):
     area_id = ForeignKeyField(Area, column_name='area_id')
 
     class Meta:
-        db_table = 'employer'
+        db_table = 'employers'
         database = db_handle
 
 
