@@ -1,7 +1,7 @@
 import requests
 import json
 
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 from typing import Final
 from time import sleep
 
@@ -100,7 +100,7 @@ class HhApiParser:
 
         # Получение полных данных о вакансиях
         vacancies_info = []
-        for data in data_book:
+        for data in tqdm(data_book):                                                        # NOTE: WITH PROGRESS BAR
             try:
                 vacancy = self.get_vacancy_by_id(data.get('id'))
             except:
