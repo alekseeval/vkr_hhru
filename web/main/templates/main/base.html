@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ru">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Главная</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+    <!--    NOTE: FONTS-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway&family=Roboto&display=swap" rel="stylesheet">
+
+    {% block external %}{% endblock %}
+    <script src="{% static 'js/navbar.js' %}"></script>
+
+</head>
+<body class="d-flex">
+
+
+    <div>
+        <div id="nav-sidebar" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-p">
+            <a href="{% url 'home' %}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                <h3 class="fs-4"><i class="bi bi-journal-check"></i> Resume Helper</h3>
+            </a>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+              <li class="nav-item">
+                <a href="{% url 'home' %}" class="nav-link text-white {% if active_el == 'home' %}active{% endif %}" aria-current="page">
+                  <i class="bi bi-check-square"></i>
+                  Общие рекомендации
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'resume_list' %}" class="nav-link text-white {% if active_el == 'rl_list' %}active{% endif %}" aria-current="page">
+                  <i class="bi bi-inboxes"></i>
+                  Мои резюме
+                </a>
+              </li>
+
+
+                <li class="nav-item text-black mt-5">
+
+                    <div class="card">
+                      <div class="card-header font-weight-bold text-white bg-danger">
+                        Мои резюме:
+                      </div>
+                      <div class="list-group list-group-flush">
+                            {% for el in top_resumes %}
+                                <a href="/app/resume?resume_id={{ el.id }}" class="card-body list-group-item list-group-item-action {% if active_el == el.id %}active{% endif %}">
+                                    <h5  class="card-title">{{ el.title }}</h5>
+                                    <p class="card-text text-muted font-weight-light">Общее число просмотров: {{ el.total_views }}</p>
+                                </a>
+                            {% endfor %}
+                      </div>
+                    </div>
+
+                </li>
+
+                {% if top_resumes|length > 3 %}
+                    <a href="{% url 'resume_list' %}" class="nav-item link-info text-right h5">
+                        View all... <i class="bi bi-chevron-double-right"></i>
+                    </a>
+                {% endif %}
+
+
+            </ul>
+            <hr>
+            <div class="dropdown">
+              <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdown-menu" data-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-circle"></i>
+                <strong>{{ user }}</strong>
+              </a>
+              <ul id="nav-drop-down" class="dropdown-menu" style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate(0px, -50px);">
+<!--                <li><a class="dropdown-item" href="{% url 'home' %}">New resume...</a></li>-->
+                <li><a class="dropdown-item" href="{% url 'home' %}">Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
+              </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="content" class="d-flex flex-column p-3">
+        {% block content %}{% endblock %}
+    </div>
+
+
+</body>
+</html>

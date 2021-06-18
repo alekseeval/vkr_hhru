@@ -1,8 +1,8 @@
-from data_parsers.hhVacancyParser import HhVacancyParser
+from data_parsers.hhApiParser import HhApiParser
 from services.db_service import DbService
 
 # Получение данных справочника dictionaries и занесение их в
-parser = HhVacancyParser()
+parser = HhApiParser()
 db_service = DbService()
 
 data = parser.get_dictionaries()
