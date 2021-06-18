@@ -13,7 +13,7 @@ class DbService:
         with self.db_handle.cursor() as cursor:
             for schedule in schedules:
                 cursor.execute('''
-                    INSERT INTO schedule
+                    INSERT INTO schedules
                     VALUES (%(id)s, %(name)s) 
                     ON CONFLICT (id)
                     DO UPDATE SET name = %(name)s
@@ -25,7 +25,7 @@ class DbService:
         with self.db_handle.cursor() as cursor:
             for emp_type in emp_types_list:
                 cursor.execute('''
-                    INSERT INTO employer_type
+                    INSERT INTO types_of_employers
                     VALUES (%(id)s, %(name)s) 
                     ON CONFLICT (id)
                     DO UPDATE SET name = %(name)s
@@ -42,7 +42,7 @@ class DbService:
         with self.db_handle.cursor() as cursor:
             for experience in experience_list:
                 cursor.execute('''
-                    INSERT INTO experience
+                    INSERT INTO experiences
                     VALUES (%(id)s, %(name)s)
                     ON CONFLICT (id)
                     DO UPDATE SET name = %(name)s
@@ -59,7 +59,7 @@ class DbService:
         with self.db_handle.cursor() as cursor:
             for currency in currencies:
                 cursor.execute('''
-                    INSERT INTO currency
+                    INSERT INTO currencies
                     VALUES (%(code)s, %(abbr)s, %(name)s, %(rate)s, %(default)s)
                     ON CONFLICT (code)
                     DO UPDATE SET (abbr, name, rate, is_default) = (%(abbr)s, %(name)s, %(rate)s, %(default)s)
@@ -76,7 +76,7 @@ class DbService:
         with self.db_handle.cursor() as cursor:
             for employment in employments:
                 cursor.execute('''
-                    INSERT INTO employment
+                    INSERT INTO employments
                     VALUES (%(id)s, %(name)s)
                     ON CONFLICT (id)
                     DO UPDATE SET name = %(name)s
@@ -101,7 +101,7 @@ class DbService:
                 specialization['profarea_id'] = profarea_id
                 specialization['profarea_name'] = profarea_name
                 cursor.execute('''
-                    INSERT INTO specialization
+                    INSERT INTO specializations
                     VALUES (%(id)s, %(name)s, %(profarea_id)s, %(profarea_name)s)
                     ON CONFLICT (id)
                     DO UPDATE SET 
@@ -149,18 +149,6 @@ class DbService:
                                                  building=address.get('building'),
                                                  description=address.get('description'),
                                                  city=address.get('city'))
-                metros = vacancy.get('metro_stations')
-                if metros is not None:
-                    for metro in metros:
-                        self.model.MetroStation.get_or_create(lat=metro.get('lat'), lng=metro.get('lng'),
-                                                              station_id=metro.get('station_id'),
-                                                              station_name=metro.get('station_name'),
-                                                              line_id=metro.get('line_id'),
-                                                              line_name=metro.get('line_name'))
-                        self.model.AddressMetro.get_or_create(address_lat=address.get('lat'),
-                                                              address_lng=address.get('lng'),
-                                                              metro_station_lat=metro.get('lat'),
-                                                              metro_station_lng=metro.get('lng'))
             else:
                 address = {}
 
@@ -210,7 +198,8 @@ class DbService:
             skills = vacancy.get('key_skills')
             if skills is not None:
                 for skill in skills:
-                    self.model.VacancySkill.get_or_create(vacancy_id=vacancy.get('id'), skill_name=skill.get('name'))
+                    skill_instance = self.model.KeySkill.get_or_create(name=skill.get('name'))
+                    self.model.VacancySkill.get_or_create(vacancy_id=vacancy.get('id'), skill_id=skill_instance[0])
 
             specializations = vacancy.get('specializations')
             if specializations is not None:
@@ -218,7 +207,7 @@ class DbService:
                     self.model.Specialization.get_or_create(id=spec.get('id'), name=spec.get('name'),
                                                             profarea_id=spec.get('profarea_id'),
                                                             profarea_name=spec.get('profarea_name'))
-                    self.model.SpecializationVacancy.get_or_create(vacancy_id=vacancy.get('id'),
+                    self.model.VacancySpecialization.get_or_create(vacancy_id=vacancy.get('id'),
                                                                    specialization_id=spec.get('id'))
 
     def save_employers(self, employer_data_list):
@@ -242,13 +231,16 @@ class DbService:
             area_id=area.get('id')
         )
 
+    # TODO: Переделать запись резюме
     def load_resumes(self, resumes):
 
         for resume in resumes:
             with self.db_handle.cursor() as cursor:
                 cursor.execute("""
-                    INSERT INTO resume
-                    VALUES (%(id)s, %(title)s, %(have_photo)s, %(salary)s, %(about)s, %(higher_educations_number)s, %(key_skills)s, %(area_id)s, %(schedule)s, %(employment)s, %(specializations)s, %(total_experience)s)
+                    INSERT INTO resumes
+                    VALUES (%(id)s, %(title)s, %(have_photo)s, %(salary)s, %(about)s, %(higher_educations_number)s,
+                    %(key_skills)s, %(area_id)s, %(schedule)s, %(employment)s, %(specializations)s,
+                    %(total_experience)s)
                 """, resume)
 
         self.db_handle.commit()
