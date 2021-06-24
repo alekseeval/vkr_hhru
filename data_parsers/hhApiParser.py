@@ -9,7 +9,6 @@ from time import sleep
 class HhApiParser:
     API_URL: Final = 'https://api.hh.ru'
     API_VACANCIES_URL: Final = API_URL + '/vacancies'
-    api_access_token = None
 
     # --------------------------------------------------------------------------------------
     # req_params        --  dict, который должен содержать параметры запроса к API
@@ -22,50 +21,6 @@ class HhApiParser:
         request.close()
         assert 'errors' not in data
         return data
-
-    # --------------------------------------------------------------------------------------
-    # Возвращает API access_token, при необходимости генерируя его по новой
-    # --------------------------------------------------------------------------------------
-    def get_api_token(self):
-
-        if self.api_access_token is not None:
-            return self.api_access_token
-
-        with open('workflow/oauth_data/api_token', 'r') as file:
-            file_data = json.load(file)
-            self.api_access_token = file_data['access_token']
-
-        # Если токен еще валиден
-        if self.__test_access_key(self.api_access_token):
-            return self.api_access_token
-
-        with open('workflow/oauth_data/api_credentials', 'r') as file:
-            file_data = json.load(file)
-            client_id = file_data['client_id']
-            client_secret = file_data['client_secret']
-        req_params = {
-            'grant_type': 'client_credentials',
-            'client_id': client_id,
-            'client_secret': client_secret
-        }
-        request = requests.post('https://hh.ru/oauth/token', req_params)
-        data = request.json()
-        request.close()
-
-        assert 'error' not in data
-
-        self.api_access_token = data['access_token']
-        with open('workflow/oauth_data/api_token', 'w') as file:
-            json.dump(data, file)
-        return self.api_access_token
-
-    # --------------------------------------------------------------------------------------
-    # @return       --  True, если токен валиден, иначе False
-    # --------------------------------------------------------------------------------------
-    @staticmethod
-    def __test_access_key(access_token):
-        request = requests.get('https://api.hh.ru/me', headers={'Authorization': f'Bearer {access_token}'})
-        return request.status_code == 200
 
     # --------------------------------------------------------------------------------------
     # Возвращает данные о всех вакансиях по запросу, с учетом пагинации (с учетом
