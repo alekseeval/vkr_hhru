@@ -36,8 +36,24 @@ class HhResumeParser:
     def get_resumes(self, spec_id):
 
         # Обход всех страниц запроса
+        resume_hrefs = self.get_resume_href_list(spec_id)
+
+        # Обход всех полученных ссылок на резюме
+        resumes_data = []
+        for resume_href in tqdm(resume_hrefs, desc='Обход вакансий'):                       # NOTE: WITH PROGRESS BAR
+            # self.driver.get(resume_href)
+            self.go_to_page(resume_href)
+            # Обработка недоступного резюме
+            if len(self.driver.find_elements_by_css_selector('.attention_bad')) != 0:
+                continue
+            resumes_data.append(self.parse_resume_info())
+
+        # self.driver.close()
+        return resumes_data
+
+    def get_resume_href_list(self, spec_id):
         resume_hrefs = []
-        for i in tqdm(range(10), desc='Обход страниц'):                                     # NOTE: WITH PROGRESS BAR
+        for i in tqdm(range(10), desc='Обход страниц'):  # NOTE: WITH PROGRESS BAR
             self.go_to_page(
                 f'https://irkutsk.hh.ru/search/resume?'
                 f'clusters=true&'
@@ -58,19 +74,7 @@ class HhResumeParser:
             page_hrefs = self.driver.find_elements_by_css_selector('.resume-search-item__name')
             for href in page_hrefs:
                 resume_hrefs.append(href.get_attribute('href'))
-
-        # Обход всех полученных ссылок на резюме
-        resumes_data = []
-        for resume_href in tqdm(resume_hrefs, desc='Обход вакансий'):                       # NOTE: WITH PROGRESS BAR
-            # self.driver.get(resume_href)
-            self.go_to_page(resume_href)
-            # Обработка недоступного резюме
-            if len(self.driver.find_elements_by_css_selector('.attention_bad')) != 0:
-                continue
-            resumes_data.append(self.parse_resume_info())
-
-        # self.driver.close()
-        return resumes_data
+        return resume_hrefs
 
     def parse_resume_info(self):
 
