@@ -33,10 +33,10 @@ class HhResumeParser:
             self.init_driver()
             self.driver.get(href)
 
-    def get_resumes(self, spec_id):
+    def get_resumes(self, spec_id, number_of_pages=10):
 
         # Обход всех страниц запроса
-        resume_hrefs = self.get_resume_href_list(spec_id)
+        resume_hrefs = self.get_resume_href_list(spec_id, number_of_pages)
 
         # Обход всех полученных ссылок на резюме
         resumes_data = []
@@ -51,9 +51,9 @@ class HhResumeParser:
         # self.driver.close()
         return resumes_data
 
-    def get_resume_href_list(self, spec_id):
+    def get_resume_href_list(self, spec_id, number_of_pages):
         resume_hrefs = []
-        for i in tqdm(range(10), desc='Обход страниц'):  # NOTE: WITH PROGRESS BAR
+        for i in tqdm(range(number_of_pages), desc='Обход страниц'):  # NOTE: WITH PROGRESS BAR
             self.go_to_page(
                 f'https://irkutsk.hh.ru/search/resume?'
                 f'clusters=true&'
