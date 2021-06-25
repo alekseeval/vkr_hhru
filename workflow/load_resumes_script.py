@@ -6,7 +6,7 @@ from tqdm import tqdm
 import json
 
 service = DbService()
-data = service.execute_script("SELECT id FROM specialization WHERE profarea_id = '1'")
+data = service.execute_script("SELECT id FROM specializations WHERE profarea_id = '1'")
 specs = [item[0] for item in data]
 del data
 
