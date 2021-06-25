@@ -48,7 +48,7 @@ def resume(request):
     resume_id = request.GET.get("resume_id", "")
     top_resumes = get_top_resumes(request)
 
-    info = parser.get_applicant_resume_data(resume_id, access_token)
+    info = parser.get_resume_data(resume_id, access_token)
 
     db_service = DbService()
     currencies_db = db_service.execute_script('select code from currency')
@@ -127,7 +127,7 @@ def get_all_resumes(request):
     resumes = parser.get_applicant_resumes(HhUser.objects.get(user_id=request.user.id).access_token)['items']
     access_token = HhUser.objects.get(user_id=request.user.id).access_token
 
-    resumes_full_info = [parser.get_applicant_resume_data(item['id'], access_token) for item in resumes if item['status']['id'] == 'published']
+    resumes_full_info = [parser.get_resume_data(item['id'], access_token) for item in resumes if item['status']['id'] == 'published']
 
     return resumes_full_info
 

@@ -148,7 +148,7 @@ class HhApiParser:
         response.close()
         return data
 
-    def get_applicant_resume_data(self, resume_id, access_token):
+    def get_resume_data(self, resume_id, access_token):
         response = requests.get(f'{self.API_URL}/resumes/{resume_id}', headers={'Authorization': f'Bearer {access_token}'})
         data = response.json()
         response.close()
@@ -168,3 +168,12 @@ class HhApiParser:
         data = response.json()
         response.close()
         return data['items']
+
+    def get_resumes(self, access_token, req_params=None):
+        if req_params is None:
+            req_params = {'per_page': 100, 'page': 0}
+        response = requests.get(f'{self.API_URL}/resumes',
+                                headers={'Authorization': f'Bearer {access_token}'})
+        data = response.json()
+        response.close()
+        return data
