@@ -53,7 +53,7 @@ class HhResumeParser:
 
     def get_resume_href_list(self, spec_id, number_of_pages):
         resume_hrefs = []
-        for i in tqdm(range(number_of_pages), desc='Обход страниц'):  # NOTE: WITH PROGRESS BAR
+        for i in range(number_of_pages):
             self.go_to_page(
                 f'https://irkutsk.hh.ru/search/resume?'
                 f'clusters=true&'
