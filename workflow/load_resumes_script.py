@@ -3,6 +3,8 @@ from data_parsers.hhResumeParser import HhResumeParser
 from data_parsers.hhApiParser import HhApiParser
 
 import re
+import threading
+from tqdm import tqdm
 
 # TODO: получить ссылки на все доступные резюме
 # NOTE: Разделить процесс получения на 2-3 потока
@@ -13,14 +15,28 @@ ids = []
 def parse(spec_id):
     parser = HhResumeParser()
     hrefs = parser.get_resume_href_list(spec_id, number_of_pages=50)
-    ids.append([re.search(id_regex, href).group(1) for href in hrefs])
+    ids.extend([re.search(id_regex, href).group(1) for href in hrefs])
+    parser.driver.quit()
+    del parser
 
 
 service = DbService()
 data = service.execute_script("SELECT id FROM specializations WHERE profarea_id = '1'")
 specs = [item[0] for item in data]
-for spec in specs:
-    parse(spec)
+threads = []
+for i in tqdm(range(0, len(specs), 3)):
+    threads.append(threading.Thread(target=parse, args=(specs[i],)))
+    threads.append(threading.Thread(target=parse, args=(specs[i+1],)))
+    threads.append(threading.Thread(target=parse, args=(specs[i+2],)))
+
+    for thread in threads:
+        thread.start()
+
+    for thread in threads:
+        thread.join()
+
+    threads.clear()
+    print(len(ids))
 
 
 ids = list(set(ids))
