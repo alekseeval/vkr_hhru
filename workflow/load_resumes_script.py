@@ -5,6 +5,7 @@ from data_parsers.hhApiParser import HhApiParser
 import re
 import threading
 from tqdm import tqdm
+from time import sleep
 
 # TODO: получить ссылки на все доступные резюме
 # NOTE: Разделить процесс получения на 2-3 потока
@@ -14,7 +15,7 @@ ids = []
 
 def parse(spec_id):
     parser = HhResumeParser()
-    hrefs = parser.get_resume_href_list(spec_id, number_of_pages=50)
+    hrefs = parser.get_resume_href_list(spec_id, number_of_pages=1)
     ids.extend([re.search(id_regex, href).group(1) for href in hrefs])
     parser.driver.quit()
     del parser
@@ -26,8 +27,10 @@ specs = [item[0] for item in data]
 threads = []
 for i in tqdm(range(0, len(specs), 3)):
     threads.append(threading.Thread(target=parse, args=(specs[i],)))
-    threads.append(threading.Thread(target=parse, args=(specs[i+1],)))
-    threads.append(threading.Thread(target=parse, args=(specs[i+2],)))
+    if i+1 < len(specs):
+        threads.append(threading.Thread(target=parse, args=(specs[i+1],)))
+    if i+2 < len(specs):
+        threads.append(threading.Thread(target=parse, args=(specs[i+2],)))
 
     for thread in threads:
         thread.start()
@@ -36,11 +39,11 @@ for i in tqdm(range(0, len(specs), 3)):
         thread.join()
 
     threads.clear()
-    print(len(ids))
 
 
+# Получение только уникальных значений id резюме
 ids = list(set(ids))
-print(len(ids))
+print(f'---> Получено {len(ids)} идентификаторов резюме')
 
 
 # TODO: получить информацию из списка предыдущего шага и записать в БД
@@ -52,8 +55,12 @@ db_service = DbService()
 
 def load_resumes(resume_ids):
     cur_resumes = []
-    for resume_id in resume_ids:
-        cur_resumes.append(parser.get_resume_data(resume_id=resume_id, access_token='H2R24B3O475ALK45NVDTHQ6U8LTKO9IPLS4RBU17SD0LOO1MMTPPKN9VO3CFVACC'))
+    for resume_id in tqdm(resume_ids, desc='Получение данных о резюме (API)'):
+        try:
+            cur_resumes.append(parser.get_resume_data(resume_id=resume_id, access_token='H2R24B3O475ALK45NVDTHQ6U8LTKO9IPLS4RBU17SD0LOO1MMTPPKN9VO3CFVACC'))
+        except:
+            sleep(0.5)
+            cur_resumes.append(parser.get_resume_data(resume_id=resume_id, access_token='H2R24B3O475ALK45NVDTHQ6U8LTKO9IPLS4RBU17SD0LOO1MMTPPKN9VO3CFVACC'))
     # db_service.load_resumes(cur_resumes) # TODO
 
 

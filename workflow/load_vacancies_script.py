@@ -34,6 +34,8 @@ while data['found'] != 0:
     req_param['date_from'] = cur_date['from'].strftime('%Y-%m-%dT%H:%M:%S')
     req_param['date_to'] = cur_date['to'].strftime('%Y-%m-%dT%H:%M:%S')
     data = parser.execute_request(req_param=req_param)
+    print(total_vacancies_number, " - ", cur_date['from']-cur_date['to'])
+
 print(f'За последний месяц имеется {total_vacancies_number} вакансий')
 
 
